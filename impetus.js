@@ -4,6 +4,7 @@ var Impetus = function(cfg) {
 	var targetX = 0;
 	var targetY = 0;
 	var friction = 0.9;
+	var preventDefault = true;
 	var boundXmin, boundXmax, boundYmin, boundYmax;
 	
 	var ticking = false;
@@ -51,7 +52,9 @@ var Impetus = function(cfg) {
 	};
 	
 	var onMove = function(ev) {
-		ev.preventDefault();
+		if (preventDefault) {
+			ev.preventDefault();
+		}
 		if (pointerActive && ev.pointerId === pointerId) {
 			pointerCurrentX = ev.clientX;
 			pointerCurrentY = ev.clientY;
@@ -175,6 +178,7 @@ var Impetus = function(cfg) {
 		callback = cfg.update || callback;
 		multiplier = cfg.multiplier || multiplier;
 		friction = cfg.friction || friction;
+		preventDefault = cfg.preventDefault || preventDefault;
 		
 		if (cfg.startX || cfg.startY) {
 			if (cfg.startX) {
