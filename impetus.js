@@ -1,5 +1,5 @@
 var Impetus = function(cfg) {
-	var source, target, callback;
+	var source, updateCallback;
 	var multiplier = 1;
 	var targetX = 0;
 	var targetY = 0;
@@ -29,12 +29,7 @@ var Impetus = function(cfg) {
 	
 	
 	var updateTarget = function() {
-		if (typeof callback === 'function') {
-			callback(target, targetX * multiplier, targetY * multiplier);
-		} else {
-			target.x = targetX * multiplier;
-			target.y = targetY * multiplier;
-		}
+		updateCallback(targetX * multiplier, targetY * multiplier);
 	};
 	
 	
@@ -165,17 +160,18 @@ var Impetus = function(cfg) {
 	
 	
 	(function init() {
-		target = (typeof cfg.target === 'string') ? document.querySelector(cfg.target) : cfg.target;
-		
 		if (cfg.source) {
 			source = (typeof cfg.source === 'string') ? document.querySelector(cfg.source) : cfg.source;
-		} else if (target.nodeType) {
-			source = target;
 		} else {
-			throw new Error('IMPETUS: Source not defined (target is not a node)');
+			source = document;
 		}
 		
-		callback = cfg.update || callback;
+		if (cfg.update) {
+			updateCallback = cfg.update || updateCallback;
+		} else {
+			throw new Error('IMPETUS: update function not defined.');
+		}
+		
 		multiplier = cfg.multiplier || multiplier;
 		friction = cfg.friction || friction;
 		preventDefault = cfg.preventDefault || preventDefault;
