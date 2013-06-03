@@ -21,12 +21,9 @@ var Impetus = function(cfg) {
 	
 	
 	var requestAnimFrame = (function(){
-		return window.requestAnimationFrame   ||
-			window.webkitRequestAnimationFrame ||
-			window.mozRequestAnimationFrame    ||
-			function(callback) {
-				window.setTimeout(callback, 1000 / 60);
-			};  
+		return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
+			window.setTimeout(callback, 1000 / 60);
+		};
 	})();
 	
 	
@@ -40,32 +37,31 @@ var Impetus = function(cfg) {
 	};
 	
 	
-	var onDown = function(o) {
+	var onDown = function(ev) {
 		if (!pointerActive) {
 			pointerActive = true;
-			pointerId = o.pointerId;
+			decelerating = false;
+			pointerId = ev.pointerId;
 			
-			pointerLastX = pointerCurrentX = o.clientX;
-			pointerLastY = pointerCurrentY = o.clientY;
+			pointerLastX = pointerCurrentX = ev.clientX;
+			pointerLastY = pointerCurrentY = ev.clientY;
 			trackingPoints = []
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
-			
-			decelerating = false;
 		}
 	};
 	
-	var onMove = function(o) {
-		o.preventDefault();
-		if (pointerActive && o.pointerId === pointerId) {
-			pointerCurrentX = o.clientX;
-			pointerCurrentY = o.clientY;
+	var onMove = function(ev) {
+		ev.preventDefault();
+		if (pointerActive && ev.pointerId === pointerId) {
+			pointerCurrentX = ev.clientX;
+			pointerCurrentY = ev.clientY;
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
 			requestTick();
 		}
 	};
 	
-	var onUp = function(o) {
-		if (pointerActive && o.pointerId === pointerId) {
+	var onUp = function(ev) {
+		if (pointerActive && ev.pointerId === pointerId) {
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
 			startAnim();
@@ -76,7 +72,7 @@ var Impetus = function(cfg) {
 	var addTrackingPoint = function(x, y, time) {
 		while (trackingPoints.length > 0) {
 			if (time - trackingPoints[0].time <= 100) {
-				break
+				break;
 			}
 			trackingPoints.shift()
 		}
@@ -144,7 +140,7 @@ var Impetus = function(cfg) {
 	
 	var stepDecelAnim = function() {
 		if (!decelerating) return;
-			
+		
 		decVelX *= friction;
 		decVelY *= friction;
 		
