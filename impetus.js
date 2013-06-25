@@ -3,12 +3,13 @@ var Impetus = function(cfg) {
 	var multiplier = 1;
 	var targetX = 0;
 	var targetY = 0;
-	var friction = 0.9;
+	var friction = 0.92;
 	var preventDefault = true;
 	var boundXmin, boundXmax, boundYmin, boundYmax;
 	
 	var ticking = false;
 	var pointerActive = false;
+	var paused = false;
 	var trackingPoints = [];
 	var pointerLastX;
 	var pointerLastY;
@@ -32,9 +33,16 @@ var Impetus = function(cfg) {
 		updateCallback(targetX * multiplier, targetY * multiplier);
 	};
 	
+	this.pause = function() {
+		pointerActive = false;
+		paused = true;
+	};
+	this.unpause = function() {
+		paused = false;
+	};
 	
 	var onDown = function(ev) {
-		if (!pointerActive) {
+		if (!pointerActive && !paused) {
 			pointerActive = true;
 			decelerating = false;
 			pointerId = ev.pointerId;
@@ -62,7 +70,7 @@ var Impetus = function(cfg) {
 		if (pointerActive && ev.pointerId === pointerId) {
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
-			startAnim();
+			startDecelAnim();
 		}
 	};
 	
@@ -117,7 +125,7 @@ var Impetus = function(cfg) {
 	};
 	
 	
-	var startAnim = function() {
+	var startDecelAnim = function() {
 		var firstPoint = trackingPoints[0];
 		var lastPoint = trackingPoints[trackingPoints.length - 1];
 		
@@ -162,6 +170,9 @@ var Impetus = function(cfg) {
 	(function init() {
 		if (cfg.source) {
 			source = (typeof cfg.source === 'string') ? document.querySelector(cfg.source) : cfg.source;
+			if (!source) {
+				throw new Error('IMPETUS: source not found.');
+			}
 		} else {
 			source = document;
 		}
