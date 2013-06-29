@@ -1,4 +1,6 @@
 var Impetus = function(cfg) {
+	'use strict';
+	
 	var source, updateCallback;
 	var multiplier = 1;
 	var targetX = 0;
@@ -49,7 +51,7 @@ var Impetus = function(cfg) {
 			
 			pointerLastX = pointerCurrentX = ev.clientX;
 			pointerLastY = pointerCurrentY = ev.clientY;
-			trackingPoints = []
+			trackingPoints = [];
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
 		}
 	};
@@ -80,7 +82,7 @@ var Impetus = function(cfg) {
 			if (time - trackingPoints[0].time <= 100) {
 				break;
 			}
-			trackingPoints.shift()
+			trackingPoints.shift();
 		}
 		
 		trackingPoints.push({
@@ -187,12 +189,13 @@ var Impetus = function(cfg) {
 		friction = cfg.friction || friction;
 		preventDefault = cfg.preventDefault || preventDefault;
 		
-		if (cfg.startX || cfg.startY) {
-			if (cfg.startX) {
-				targetX = cfg.startX / multiplier;
+		
+		if (cfg.startPos) {
+			if (cfg.startPos[0]) {
+				targetX = cfg.startPos[0] / multiplier;
 			}
-			if (cfg.startY) {
-				targetY = cfg.startY / multiplier;
+			if (cfg.startPos[1]) {
+				targetY = cfg.startPos[1] / multiplier;
 			}
 			updateTarget();
 		}
