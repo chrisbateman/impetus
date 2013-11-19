@@ -47,32 +47,44 @@ var Impetus = function(cfg) {
 		if (!pointerActive && !paused) {
 			pointerActive = true;
 			decelerating = false;
-			pointerId = ev.pointerId;
 			
-			pointerLastX = pointerCurrentX = ev.clientX;
-			pointerLastY = pointerCurrentY = ev.clientY;
+			var touch = (ev.targetTouches) ? ev.targetTouches[0] : ev;
+			pointerId = touch.identifier;
+			
+			pointerLastX = pointerCurrentX = touch.clientX;
+			pointerLastY = pointerCurrentY = touch.clientY;
 			trackingPoints = [];
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
+		}
+		if (ev.type === 'touchstart') {
+			ev.preventDefault();
 		}
 	};
 	
 	var onMove = function(ev) {
-		if (preventDefault) {
-			ev.preventDefault();
-		}
-		if (pointerActive && ev.pointerId === pointerId) {
-			pointerCurrentX = ev.clientX;
-			pointerCurrentY = ev.clientY;
+		var touch = (ev.targetTouches) ? ev.targetTouches[0] : ev;
+		
+		if (pointerActive && touch.identifier === pointerId) {
+			pointerCurrentX = touch.clientX;
+			pointerCurrentY = touch.clientY;
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
 			requestTick();
+		}
+		if (ev.type === 'touchmove') {
+			ev.preventDefault();
 		}
 	};
 	
 	var onUp = function(ev) {
-		if (pointerActive && ev.pointerId === pointerId) {
+		var touch = (ev.changedTouches) ? ev.changedTouches[0] : ev;
+		
+		if (pointerActive && touch.identifier === pointerId) {
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
 			startDecelAnim();
+		}
+		if (ev.type === 'touchend') {
+			ev.preventDefault();
 		}
 	};
 	
@@ -210,9 +222,13 @@ var Impetus = function(cfg) {
 		}
 		
 		
-		source.addEventListener('PointerDown', onDown);
-		document.body.addEventListener('PointerMove', onMove);
-		document.addEventListener('PointerUp', onUp);
+		source.addEventListener('touchstart', onDown);
+		document.body.addEventListener('touchmove', onMove);
+		document.addEventListener('touchend', onUp);
+		
+		source.addEventListener('mousedown', onDown);
+		document.body.addEventListener('mousemove', onMove);
+		document.addEventListener('mouseup', onUp);
 		
 	})();
 	
