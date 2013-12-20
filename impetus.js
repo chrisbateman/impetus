@@ -43,48 +43,56 @@ var Impetus = function(cfg) {
 		paused = false;
 	};
 	
+	var normalizeEvent = function(ev) {
+		if (ev.type === 'touchmove' || ev.type === 'touchstart' || ev.type === 'touchend') {
+			ev.preventDefault();
+			var touch = ev.targetTouches[0] || ev.changedTouches[0];
+			return {
+				x: touch.clientX,
+				y: touch.clientY,
+				id: touch.identifier
+			}
+		} else { // if (ev.type === 'mousemove' || ev.type === 'mousedown' || ev.type === 'mouseup') {
+			return {
+				x: ev.clientX,
+				y: ev.clientY,
+				id: null
+			};
+		}
+	};
+	
 	var onDown = function(ev) {
+		var event = normalizeEvent(ev);
 		if (!pointerActive && !paused) {
 			pointerActive = true;
 			decelerating = false;
+			pointerId = event.id;
 			
-			var touch = (ev.targetTouches) ? ev.targetTouches[0] : ev;
-			pointerId = touch.identifier;
-			
-			pointerLastX = pointerCurrentX = touch.clientX;
-			pointerLastY = pointerCurrentY = touch.clientY;
+			pointerLastX = pointerCurrentX = event.x;
+			pointerLastY = pointerCurrentY = event.y;
 			trackingPoints = [];
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
-		}
-		if (ev.type === 'touchstart') {
-			ev.preventDefault();
 		}
 	};
 	
 	var onMove = function(ev) {
-		var touch = (ev.targetTouches) ? ev.targetTouches[0] : ev;
+		var event = normalizeEvent(ev);
 		
-		if (pointerActive && touch.identifier === pointerId) {
-			pointerCurrentX = touch.clientX;
-			pointerCurrentY = touch.clientY;
+		if (pointerActive && event.id === pointerId) {
+			pointerCurrentX = event.x;
+			pointerCurrentY = event.y;
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
 			requestTick();
-		}
-		if (ev.type === 'touchmove') {
-			ev.preventDefault();
 		}
 	};
 	
 	var onUp = function(ev) {
-		var touch = (ev.changedTouches) ? ev.changedTouches[0] : ev;
+		var event = normalizeEvent(ev);
 		
-		if (pointerActive && touch.identifier === pointerId) {
+		if (pointerActive && event.id === pointerId) {
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
 			startDecelAnim();
-		}
-		if (ev.type === 'touchend') {
-			ev.preventDefault();
 		}
 	};
 	
@@ -225,6 +233,7 @@ var Impetus = function(cfg) {
 		source.addEventListener('touchstart', onDown);
 		document.body.addEventListener('touchmove', onMove);
 		document.addEventListener('touchend', onUp);
+		document.addEventListener('touchcancel', onUp);
 		
 		source.addEventListener('mousedown', onDown);
 		document.body.addEventListener('mousemove', onMove);
