@@ -1,27 +1,18 @@
 var Impetus = function(cfg) {
 	'use strict';
 	
-	var source, updateCallback;
+	var source, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
 	var multiplier = 1;
 	var targetX = 0;
 	var targetY = 0;
 	var friction = 0.92;
 	var preventDefault = true;
-	var boundXmin, boundXmax, boundYmin, boundYmax;
-	
 	var ticking = false;
 	var pointerActive = false;
 	var paused = false;
-	var trackingPoints = [];
-	var pointerLastX;
-	var pointerLastY;
-	var pointerCurrentX;
-	var pointerCurrentY;
-	var pointerId;
-	
 	var decelerating = false;
-	var decVelX;
-	var decVelY;
+	var trackingPoints = [];
+	
 	
 	
 	var requestAnimFrame = (function(){
@@ -31,10 +22,6 @@ var Impetus = function(cfg) {
 	})();
 	
 	
-	var updateTarget = function() {
-		updateCallback(targetX * multiplier, targetY * multiplier);
-	};
-	
 	this.pause = function() {
 		pointerActive = false;
 		paused = true;
@@ -42,6 +29,12 @@ var Impetus = function(cfg) {
 	this.unpause = function() {
 		paused = false;
 	};
+	
+	
+	var updateTarget = function() {
+		updateCallback(targetX * multiplier, targetY * multiplier);
+	};
+	
 	
 	var normalizeEvent = function(ev) {
 		if (ev.type === 'touchmove' || ev.type === 'touchstart' || ev.type === 'touchend') {
@@ -71,7 +64,7 @@ var Impetus = function(cfg) {
 			pointerLastX = pointerCurrentX = event.x;
 			pointerLastY = pointerCurrentY = event.y;
 			trackingPoints = [];
-			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
+			addTrackingPoint(pointerLastX, pointerLastY);
 		}
 	};
 	
@@ -81,7 +74,7 @@ var Impetus = function(cfg) {
 		if (pointerActive && event.id === pointerId) {
 			pointerCurrentX = event.x;
 			pointerCurrentY = event.y;
-			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
+			addTrackingPoint(pointerLastX, pointerLastY);
 			requestTick();
 		}
 	};
@@ -91,13 +84,14 @@ var Impetus = function(cfg) {
 		
 		if (pointerActive && event.id === pointerId) {
 			pointerActive = false;
-			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
+			addTrackingPoint(pointerLastX, pointerLastY);
 			startDecelAnim();
 		}
 	};
 	
 	
-	var addTrackingPoint = function(x, y, time) {
+	var addTrackingPoint = function(x, y) {
+		var time = Date.now();
 		while (trackingPoints.length > 0) {
 			if (time - trackingPoints[0].time <= 100) {
 				break;
