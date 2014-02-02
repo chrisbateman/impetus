@@ -89,6 +89,12 @@ var Impetus = function(cfg) {
 		}
 	};
 	
+	var onCancel = function(ev) {
+		pointerActive = false;
+		addTrackingPoint(pointerLastX, pointerLastY);
+		startDecelAnim();
+	};
+	
 	
 	var addTrackingPoint = function(x, y) {
 		var time = Date.now();
@@ -166,7 +172,7 @@ var Impetus = function(cfg) {
 		decVelX *= friction;
 		decVelY *= friction;
 		
-		if (Math.abs(decVelX) > 0.5 || Math.abs(decVelY) > 0.5) {
+		if (Math.abs(decVelX) > 0.4 || Math.abs(decVelY) > 0.4) {
 			targetX += decVelX;
 			targetY += decVelY;
 			
@@ -204,12 +210,12 @@ var Impetus = function(cfg) {
 		preventDefault = cfg.preventDefault || preventDefault;
 		
 		
-		if (cfg.startPos) {
-			if (cfg.startPos[0]) {
-				targetX = cfg.startPos[0] / multiplier;
+		if (cfg.initialValues) {
+			if (cfg.initialValues[0]) {
+				targetX = cfg.initialValues[0] / multiplier;
 			}
-			if (cfg.startPos[1]) {
-				targetY = cfg.startPos[1] / multiplier;
+			if (cfg.initialValues[1]) {
+				targetY = cfg.initialValues[1] / multiplier;
 			}
 			updateTarget();
 		}
@@ -225,12 +231,12 @@ var Impetus = function(cfg) {
 		
 		
 		source.addEventListener('touchstart', onDown);
-		document.body.addEventListener('touchmove', onMove);
+		source.addEventListener('touchmove', onMove);
 		document.addEventListener('touchend', onUp);
-		document.addEventListener('touchcancel', onUp);
+		document.addEventListener('touchcancel', onCancel);
 		
 		source.addEventListener('mousedown', onDown);
-		document.body.addEventListener('mousemove', onMove);
+		document.addEventListener('mousemove', onMove);
 		document.addEventListener('mouseup', onUp);
 		
 	})();
