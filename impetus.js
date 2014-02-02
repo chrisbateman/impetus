@@ -1,27 +1,18 @@
 var Impetus = function(cfg) {
 	'use strict';
 	
-	var source, updateCallback;
+	var source, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
 	var multiplier = 1;
 	var targetX = 0;
 	var targetY = 0;
 	var friction = 0.92;
 	var preventDefault = true;
-	var boundXmin, boundXmax, boundYmin, boundYmax;
-	
 	var ticking = false;
 	var pointerActive = false;
 	var paused = false;
-	var trackingPoints = [];
-	var pointerLastX;
-	var pointerLastY;
-	var pointerCurrentX;
-	var pointerCurrentY;
-	var pointerId;
-	
 	var decelerating = false;
-	var decVelX;
-	var decVelY;
+	var trackingPoints = [];
+	
 	
 	
 	var requestAnimFrame = (function(){
@@ -31,10 +22,6 @@ var Impetus = function(cfg) {
 	})();
 	
 	
-	var updateTarget = function() {
-		updateCallback(targetX * multiplier, targetY * multiplier);
-	};
-	
 	this.pause = function() {
 		pointerActive = false;
 		paused = true;
@@ -43,41 +30,74 @@ var Impetus = function(cfg) {
 		paused = false;
 	};
 	
+	
+	var updateTarget = function() {
+		updateCallback(targetX * multiplier, targetY * multiplier);
+	};
+	
+	
+	var normalizeEvent = function(ev) {
+		if (ev.type === 'touchmove' || ev.type === 'touchstart' || ev.type === 'touchend') {
+			ev.preventDefault();
+			var touch = ev.targetTouches[0] || ev.changedTouches[0];
+			return {
+				x: touch.clientX,
+				y: touch.clientY,
+				id: touch.identifier
+			}
+		} else { // if (ev.type === 'mousemove' || ev.type === 'mousedown' || ev.type === 'mouseup') {
+			return {
+				x: ev.clientX,
+				y: ev.clientY,
+				id: null
+			};
+		}
+	};
+	
 	var onDown = function(ev) {
+		var event = normalizeEvent(ev);
 		if (!pointerActive && !paused) {
 			pointerActive = true;
 			decelerating = false;
-			pointerId = ev.pointerId;
+			pointerId = event.id;
 			
-			pointerLastX = pointerCurrentX = ev.clientX;
-			pointerLastY = pointerCurrentY = ev.clientY;
+			pointerLastX = pointerCurrentX = event.x;
+			pointerLastY = pointerCurrentY = event.y;
 			trackingPoints = [];
-			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
+			addTrackingPoint(pointerLastX, pointerLastY);
 		}
 	};
 	
 	var onMove = function(ev) {
-		if (preventDefault) {
-			ev.preventDefault();
-		}
-		if (pointerActive && ev.pointerId === pointerId) {
-			pointerCurrentX = ev.clientX;
-			pointerCurrentY = ev.clientY;
-			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
+		var event = normalizeEvent(ev);
+		
+		if (pointerActive && event.id === pointerId) {
+			pointerCurrentX = event.x;
+			pointerCurrentY = event.y;
+			addTrackingPoint(pointerLastX, pointerLastY);
 			requestTick();
 		}
 	};
 	
 	var onUp = function(ev) {
-		if (pointerActive && ev.pointerId === pointerId) {
+		var event = normalizeEvent(ev);
+		
+		if (pointerActive && event.id === pointerId) {
 			pointerActive = false;
-			addTrackingPoint(pointerLastX, pointerLastY, Date.now());
+			addTrackingPoint(pointerLastX, pointerLastY);
 			startDecelAnim();
 		}
 	};
 	
+	var onCancel = function(ev) {
+		pointerActive = false;
+		addTrackingPoint(pointerLastX, pointerLastY);
+		startDecelAnim();
+	};
 	
-	var addTrackingPoint = function(x, y, time) {
+	
+	var addTrackingPoint = function(x, y) {
+		var time = Date.now();
 		while (trackingPoints.length > 0) {
 			if (time - trackingPoints[0].time <= 100) {
 				break;
@@ -152,7 +172,7 @@ var Impetus = function(cfg) {
 		decVelX *= friction;
 		decVelY *= friction;
 		
-		if (Math.abs(decVelX) > 0.5 || Math.abs(decVelY) > 0.5) {
+		if (Math.abs(decVelX) > 0.4 || Math.abs(decVelY) > 0.4) {
 			targetX += decVelX;
 			targetY += decVelY;
 			
@@ -190,12 +210,12 @@ var Impetus = function(cfg) {
 		preventDefault = cfg.preventDefault || preventDefault;
 		
 		
-		if (cfg.startPos) {
-			if (cfg.startPos[0]) {
-				targetX = cfg.startPos[0] / multiplier;
+		if (cfg.initialValues) {
+			if (cfg.initialValues[0]) {
+				targetX = cfg.initialValues[0] / multiplier;
 			}
-			if (cfg.startPos[1]) {
-				targetY = cfg.startPos[1] / multiplier;
+			if (cfg.initialValues[1]) {
+				targetY = cfg.initialValues[1] / multiplier;
 			}
 			updateTarget();
 		}
@@ -210,9 +230,14 @@ var Impetus = function(cfg) {
 		}
 		
 		
-		source.addEventListener('PointerDown', onDown);
-		document.body.addEventListener('PointerMove', onMove);
-		document.addEventListener('PointerUp', onUp);
+		source.addEventListener('touchstart', onDown);
+		source.addEventListener('touchmove', onMove);
+		document.addEventListener('touchend', onUp);
+		document.addEventListener('touchcancel', onCancel);
+		
+		source.addEventListener('mousedown', onDown);
+		document.addEventListener('mousemove', onMove);
+		document.addEventListener('mouseup', onUp);
 		
 	})();
 	
