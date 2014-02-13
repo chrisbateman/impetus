@@ -45,7 +45,7 @@
 					x: touch.clientX,
 					y: touch.clientY,
 					id: touch.identifier
-				}
+				};
 			} else { // if (ev.type === 'mousemove' || ev.type === 'mousedown' || ev.type === 'mouseup') {
 				return {
 					x: ev.clientX,
@@ -240,14 +240,14 @@
 			document.addEventListener('mousemove', onMove);
 			document.addEventListener('mouseup', onUp);
 			
-		})();	
+		})();
 	};
 	
-	
+	// AMD
 	if (typeof define === "function" && define.amd) {
-		define('impetus', [], Impetus);
-	} else if (typeof module === "object" && module.exports) {
-		module.exports = Impetus;
+		define(function() {
+			return Impetus;
+		});
 	} else {
 		this.Impetus = Impetus;
 	}
