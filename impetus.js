@@ -39,7 +39,6 @@
 		
 		var normalizeEvent = function(ev) {
 			if (ev.type === 'touchmove' || ev.type === 'touchstart' || ev.type === 'touchend') {
-				if (ev.type === 'touchmove') ev.preventDefault();
 				var touch = ev.targetTouches[0] || ev.changedTouches[0];
 				return {
 					x: touch.clientX,
@@ -66,10 +65,17 @@
 				pointerLastY = pointerCurrentY = event.y;
 				trackingPoints = [];
 				addTrackingPoint(pointerLastX, pointerLastY);
+				
+				document.addEventListener('touchmove', onMove);
+				document.addEventListener('touchend', onUp);
+				document.addEventListener('touchcancel', stopTracking);
+				document.addEventListener('mousemove', onMove);
+				document.addEventListener('mouseup', onUp);
 			}
 		};
 		
 		var onMove = function(ev) {
+			ev.preventDefault();
 			var event = normalizeEvent(ev);
 			
 			if (pointerActive && event.id === pointerId) {
@@ -84,16 +90,21 @@
 			var event = normalizeEvent(ev);
 			
 			if (pointerActive && event.id === pointerId) {
-				pointerActive = false;
-				addTrackingPoint(pointerLastX, pointerLastY);
-				startDecelAnim();
+				stopTracking();
 			}
 		};
 		
-		var onCancel = function(ev) {
+		var stopTracking = function() {
+			document.removeEventListener('touchmove', onMove);
+			document.removeEventListener('mousemove', onMove);
+			
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY);
 			startDecelAnim();
+			
+			document.removeEventListener('touchend', onUp);
+			document.removeEventListener('touchcancel', stopTracking);
+			document.removeEventListener('mouseup', onUp);
 		};
 		
 		
@@ -232,13 +243,7 @@
 			
 			
 			source.addEventListener('touchstart', onDown);
-			source.addEventListener('touchmove', onMove);
-			document.addEventListener('touchend', onUp);
-			document.addEventListener('touchcancel', onCancel);
-			
 			source.addEventListener('mousedown', onDown);
-			document.addEventListener('mousemove', onMove);
-			document.addEventListener('mouseup', onUp);
 			
 		})();
 	};
