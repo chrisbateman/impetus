@@ -2,7 +2,7 @@
 	var Impetus = function(cfg) {
 		'use strict';
 		
-		var source, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
+		var sourceEl, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
 		var multiplier = 1;
 		var targetX = 0;
 		var targetY = 0;
@@ -45,7 +45,7 @@
 		 * Executes the update function
 		 */
 		var updateTarget = function() {
-			updateCallback(targetX * multiplier, targetY * multiplier);
+			updateCallback.call(sourceEl, targetX * multiplier, targetY * multiplier);
 		};
 		
 		/**
@@ -253,12 +253,12 @@
 		 */
 		(function init() {
 			if (cfg.source) {
-				source = (typeof cfg.source === 'string') ? document.querySelector(cfg.source) : cfg.source;
-				if (!source) {
-					throw new Error('IMPETUS: source not found.');
+				sourceEl = (typeof cfg.source === 'string') ? document.querySelector(cfg.source) : cfg.source;
+				if (!sourceEl) {
+					throw new Error('IMPETUS: sourceEl not found.');
 				}
 			} else {
-				source = document;
+				sourceEl = document;
 			}
 			
 			if (cfg.update) {
@@ -293,8 +293,8 @@
 			}
 			
 			
-			source.addEventListener('touchstart', onDown);
-			source.addEventListener('mousedown', onDown);
+			sourceEl.addEventListener('touchstart', onDown);
+			sourceEl.addEventListener('mousedown', onDown);
 			
 		})();
 	};
