@@ -15,28 +15,44 @@
 		var trackingPoints = [];
 		
 		
-		
+		/**
+		 * @see http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+		 */
 		var requestAnimFrame = (function(){
 			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
 				window.setTimeout(callback, 1000 / 60);
 			};
 		})();
 		
-		
+		/**
+		 * Disable movement processing
+		 * @public
+		 */
 		this.pause = function() {
 			pointerActive = false;
 			paused = true;
 		};
+		
+		/**
+		 * Enable movement processing
+		 * @public
+		 */
 		this.unpause = function() {
 			paused = false;
 		};
 		
-		
+		/**
+		 * Executes the update function
+		 */
 		var updateTarget = function() {
 			updateCallback(targetX * multiplier, targetY * multiplier);
 		};
 		
-		
+		/**
+		 * Creates a custom normalized event object from touch and mouse events
+		 * @param  {Event} ev
+		 * @returns {Object} with x, y, and id properties
+		 */
 		var normalizeEvent = function(ev) {
 			if (ev.type === 'touchmove' || ev.type === 'touchstart' || ev.type === 'touchend') {
 				var touch = ev.targetTouches[0] || ev.changedTouches[0];
@@ -45,7 +61,7 @@
 					y: touch.clientY,
 					id: touch.identifier
 				};
-			} else { // if (ev.type === 'mousemove' || ev.type === 'mousedown' || ev.type === 'mouseup') {
+			} else { // mouse events
 				return {
 					x: ev.clientX,
 					y: ev.clientY,
@@ -54,6 +70,10 @@
 			}
 		};
 		
+		/**
+		 * Initializes movement tracking
+		 * @param  {Object} ev Normalized event
+		 */
 		var onDown = function(ev) {
 			var event = normalizeEvent(ev);
 			if (!pointerActive && !paused) {
@@ -74,6 +94,10 @@
 			}
 		};
 		
+		/**
+		 * Handles move events
+		 * @param  {Object} ev Normalized event
+		 */
 		var onMove = function(ev) {
 			ev.preventDefault();
 			var event = normalizeEvent(ev);
@@ -86,6 +110,10 @@
 			}
 		};
 		
+		/**
+		 * Handles up/end events
+		 * @param  {Object} ev Normalized event
+		 */
 		var onUp = function(ev) {
 			var event = normalizeEvent(ev);
 			
@@ -94,20 +122,26 @@
 			}
 		};
 		
+		/**
+		 * Stops movement tracking, starts animation
+		 */
 		var stopTracking = function() {
-			document.removeEventListener('touchmove', onMove);
-			document.removeEventListener('mousemove', onMove);
-			
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY);
 			startDecelAnim();
 			
+			document.removeEventListener('touchmove', onMove);
 			document.removeEventListener('touchend', onUp);
 			document.removeEventListener('touchcancel', stopTracking);
 			document.removeEventListener('mouseup', onUp);
+			document.removeEventListener('mousemove', onMove);
 		};
 		
-		
+		/**
+		 * Records movement for the last 100ms
+		 * @param {number} x
+		 * @param {number} y [description]
+		 */
 		var addTrackingPoint = function(x, y) {
 			var time = Date.now();
 			while (trackingPoints.length > 0) {
@@ -124,6 +158,9 @@
 			});
 		};
 		
+		/**
+		 * Calculate new values, call update function
+		 */
 		var update = function() {
 			targetX += pointerCurrentX - pointerLastX;
 			targetY += pointerCurrentY - pointerLastY;
@@ -136,6 +173,9 @@
 			ticking = false;
 		};
 		
+		/**
+		 * prevents animating faster than current framerate
+		 */
 		var requestTick = function() {
 			if (!ticking) {
 				requestAnimFrame(update);
@@ -143,6 +183,9 @@
 			ticking = true;
 		};
 		
+		/**
+		 * Keep values in bounds, if available
+		 */
 		var checkBounds = function() {
 			if (boundXmin && targetX < boundXmin) {
 				targetX = boundXmin;
@@ -158,7 +201,9 @@
 			}
 		};
 		
-		
+		/**
+		 * Initialize animation of values coming to a stop
+		 */
 		var startDecelAnim = function() {
 			var firstPoint = trackingPoints[0];
 			var lastPoint = trackingPoints[trackingPoints.length - 1];
@@ -178,6 +223,9 @@
 			}
 		};
 		
+		/**
+		 * Animates values slowing down
+		 */
 		var stepDecelAnim = function() {
 			if (!decelerating) return;
 			
@@ -200,7 +248,9 @@
 		};
 		
 		
-		
+		/**
+		 * Initialize instance
+		 */
 		(function init() {
 			if (cfg.source) {
 				source = (typeof cfg.source === 'string') ? document.querySelector(cfg.source) : cfg.source;
@@ -212,11 +262,12 @@
 			}
 			
 			if (cfg.update) {
-				updateCallback = cfg.update || updateCallback;
+				updateCallback = cfg.update;
 			} else {
 				throw new Error('IMPETUS: update function not defined.');
 			}
 			
+			if (typeof cfg.multipler !== 'undefined')
 			multiplier = cfg.multiplier || multiplier;
 			friction = cfg.friction || friction;
 			preventDefault = cfg.preventDefault || preventDefault;
