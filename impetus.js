@@ -3,11 +3,10 @@
 		'use strict';
 		
 		var sourceEl, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
-		var multiplier = 1;
 		var targetX = 0;
 		var targetY = 0;
+		var multiplier = 1;
 		var friction = 0.92;
-		var preventDefault = true;
 		var ticking = false;
 		var pointerActive = false;
 		var paused = false;
@@ -37,8 +36,21 @@
 		 * Enable movement processing
 		 * @public
 		 */
-		this.unpause = function() {
+		this.resume = function() {
 			paused = false;
+		};
+		
+		/**
+		 * Update the multiplier value
+		 * @public
+		 * @param {Number} val
+		 */
+		this.setMultiplier = function(val) {
+			var oldMultiplier = multiplier;
+			multiplier = val;
+			targetX *= (oldMultiplier / multiplier);
+			targetY *= (oldMultiplier / multiplier);
+			initBounds();
 		};
 		
 		/**
@@ -184,6 +196,20 @@
 		};
 		
 		/**
+		 * Initializes the bound values
+		 */
+		var initBounds = function() {
+			if (cfg.boundX) {
+				boundXmin = cfg.boundX[0] / multiplier;
+				boundXmax = cfg.boundX[1] / multiplier;
+			}
+			if (cfg.boundY) {
+				boundYmin = cfg.boundY[0] / multiplier;
+				boundYmax = cfg.boundY[1] / multiplier;
+			}
+		};
+		
+		/**
 		 * Keep values in bounds, if available
 		 */
 		var checkBounds = function() {
@@ -267,11 +293,9 @@
 				throw new Error('IMPETUS: update function not defined.');
 			}
 			
-			if (typeof cfg.multipler !== 'undefined')
+			if (typeof cfg.multiplier !== 'undefined')
 			multiplier = cfg.multiplier || multiplier;
 			friction = cfg.friction || friction;
-			preventDefault = cfg.preventDefault || preventDefault;
-			
 			
 			if (cfg.initialValues) {
 				if (cfg.initialValues[0]) {
@@ -283,15 +307,7 @@
 				updateTarget();
 			}
 			
-			if (cfg.boundX) {
-				boundXmin = cfg.boundX[0] / multiplier;
-				boundXmax = cfg.boundX[1] / multiplier;
-			}
-			if (cfg.boundY) {
-				boundYmin = cfg.boundY[0] / multiplier;
-				boundYmax = cfg.boundY[1] / multiplier;
-			}
-			
+			initBounds();
 			
 			sourceEl.addEventListener('touchstart', onDown);
 			sourceEl.addEventListener('mousedown', onDown);
