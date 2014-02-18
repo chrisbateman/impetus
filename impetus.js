@@ -46,18 +46,14 @@
 		 * @param {Number} val
 		 */
 		this.setMultiplier = function(val) {
-			var oldMultiplier = multiplier;
 			multiplier = val;
-			targetX *= (oldMultiplier / multiplier);
-			targetY *= (oldMultiplier / multiplier);
-			initBounds();
 		};
 		
 		/**
 		 * Executes the update function
 		 */
-		var updateTarget = function() {
-			updateCallback.call(sourceEl, targetX * multiplier, targetY * multiplier);
+		var callUpdateCallback = function() {
+			updateCallback.call(sourceEl, targetX, targetY);
 		};
 		
 		/**
@@ -174,11 +170,11 @@
 		 * Calculate new values, call update function
 		 */
 		var update = function() {
-			targetX += pointerCurrentX - pointerLastX;
-			targetY += pointerCurrentY - pointerLastY;
+			targetX += (pointerCurrentX - pointerLastX) * multiplier;
+			targetY += (pointerCurrentY - pointerLastY) * multiplier;
 			
 			checkBounds();
-			updateTarget();
+			callUpdateCallback();
 			
 			pointerLastX = pointerCurrentX;
 			pointerLastY = pointerCurrentY;
@@ -200,12 +196,12 @@
 		 */
 		var initBounds = function() {
 			if (cfg.boundX) {
-				boundXmin = cfg.boundX[0] / multiplier;
-				boundXmax = cfg.boundX[1] / multiplier;
+				boundXmin = cfg.boundX[0];
+				boundXmax = cfg.boundX[1];
 			}
 			if (cfg.boundY) {
-				boundYmin = cfg.boundY[0] / multiplier;
-				boundYmax = cfg.boundY[1] / multiplier;
+				boundYmin = cfg.boundY[0];
+				boundYmax = cfg.boundY[1];
 			}
 		};
 		
@@ -213,16 +209,16 @@
 		 * Keep values in bounds, if available
 		 */
 		var checkBounds = function() {
-			if (boundXmin && targetX < boundXmin) {
+			if (boundXmin !== undefined && targetX < boundXmin) {
 				targetX = boundXmin;
 			}
-			if (boundXmax && targetX > boundXmax) {
+			if (boundXmax !== undefined && targetX > boundXmax) {
 				targetX = boundXmax;
 			}
-			if (boundYmin && targetY < boundYmin) {
+			if (boundYmin !== undefined && targetY < boundYmin) {
 				targetY = boundYmin;
 			}
-			if (boundYmax && targetY > boundYmax) {
+			if (boundYmax !== undefined && targetY > boundYmax) {
 				targetY = boundYmax;
 			}
 		};
@@ -238,7 +234,7 @@
 			var yOffset = lastPoint.y - firstPoint.y;
 			var timeOffset = lastPoint.time - firstPoint.time;
 			
-			var D = timeOffset / 15;
+			var D = (timeOffset / 15) / multiplier;
 			
 			decVelX = xOffset / D;
 			decVelY = yOffset / D;
@@ -265,7 +261,7 @@
 				if (checkBounds()) {
 					decelerating = false;
 				}
-				updateTarget();
+				callUpdateCallback();
 				
 				requestAnimFrame(stepDecelAnim);
 			} else {
@@ -299,12 +295,12 @@
 			
 			if (cfg.initialValues) {
 				if (cfg.initialValues[0]) {
-					targetX = cfg.initialValues[0] / multiplier;
+					targetX = cfg.initialValues[0];
 				}
 				if (cfg.initialValues[1]) {
-					targetY = cfg.initialValues[1] / multiplier;
+					targetY = cfg.initialValues[1];
 				}
-				updateTarget();
+				callUpdateCallback();
 			}
 			
 			initBounds();
