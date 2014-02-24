@@ -1,3 +1,9 @@
+/* Impetus.js
+ * http://chrisbateman.github.com/impetus
+ *
+ * Copyright (c) 2014 Chris Bateman
+ * Licensed under the MIT license */
+
 (function() {
 	var Impetus = function(cfg) {
 		'use strict';
