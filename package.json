@@ -1,0 +1,18 @@
+{
+    "name": "Impetus",
+    "version": "0.6.2",
+    "homepage": "http://chrisbateman.github.io/impetus/",
+    "author": "Chris Bateman",
+    "licenses": {
+        "type": "MIT",
+        "url": "https://raw.github.com/chrisbateman/impetus/master/LICENSE"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:chrisbateman/impetus.git"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.2",
+        "grunt-contrib-uglify": "~0.4.0"
+    }
+}
