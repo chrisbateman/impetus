@@ -100,8 +100,8 @@
 				perspective: 400px;
 	}
 	.cube {
-		-webkit-transform: translateZ(-100px);
-				transform: translateZ(-100px);
+		-webkit-transform: translateZ(-120px);
+				transform: translateZ(-120px);
 		-webkit-transform-style: preserve-3d;
 				transform-style: preserve-3d;
 		position: absolute;
@@ -177,15 +177,16 @@
 	</div>
 	<div class="info-area">
 		<div class="container">
-			<h2>Usage</h2>
+		    <p>The demos above simply demonstrate the momentum. For an example of a practical implementation, take a look at <a href="http://chrisbateman.github.io/spherical/">Spherical.js</a>.</p>
+	        
+	        <h2>Usage</h2>
 			<pre><code>new Impetus({
-	source: myNode,
-	update: function(x, y) {
-		// whatever you want to do with the values
-	}
+    source: myNode,
+    update: function(x, y) {
+        // whatever you want to do with the values
+    }
 });</code></pre>
-			<p>For more details, see the <a href="https://github.com/chrisbateman/impetus">API</a> on GitHub.</p>
-			<p><strong>Practical Implementation:</strong> Impetus.js drives the interaction for <a href="http://chrisbateman.github.io/spherical/">Spherical.js</a>.</p>
+			<p>For more usage details, see the <a href="https://github.com/chrisbateman/impetus">API</a> on GitHub.</p>
 		</div>
 	</div>
 	
@@ -206,7 +207,6 @@
 		boundX: [0, dotParent.offsetWidth - dotEl.offsetWidth],
 		//boundY: [0, dotParent.offsetHeight - dotEl.offsetHeight],
 		update: function(x, y) {
-			//this.style.transform = this.style.webkitTransform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
 			this.style.left = x + 'px';
 			this.style.top = y + 'px';
 		}
@@ -216,20 +216,10 @@
 		source: '#Cube',
 		multiplier: 0.7,
 		update: function(x, y) {
-			this.style.transform = this.style.webkitTransform = 'translateZ(-130px) rotateY('+x+'deg) rotateX('+(-y)+'deg)';
+			this.style.transform = this.style.webkitTransform = 'translateZ(-120px) rotateY('+x+'deg) rotateX('+(-y)+'deg)';
 		}
 	});
 	</script>
 	
-<script>
-(function(){
-var t,i,e,n=window,o=document,a=arguments,s="script",r=["config","track","identify","visit","push","call"],c=function(){var t,i=this;for(i._e=[],t=0;r.length>t;t++)(function(t){i[t]=function(){return i._e.push([t].concat(Array.prototype.slice.call(arguments,0))),i}})(r[t])};for(n._w=n._w||{},t=0;a.length>t;t++)n._w[a[t]]=n[a[t]]=n[a[t]]||new c;i=o.createElement(s),i.async=1,i.src="//static.woopra.com/js/w.js",e=o.getElementsByTagName(s)[0],e.parentNode.insertBefore(i,e)
-})("woopra");
-woopra.config({
-    domain: 'cbateman.com',
-    idle_timeout: 1800000
-});
-woopra.track();
-</script>
 </body>
 </html>
