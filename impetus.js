@@ -283,7 +283,7 @@
 			if (cfg.source) {
 				sourceEl = (typeof cfg.source === 'string') ? document.querySelector(cfg.source) : cfg.source;
 				if (!sourceEl) {
-					throw new Error('IMPETUS: sourceEl not found.');
+					throw new Error('IMPETUS: source not found.');
 				}
 			} else {
 				sourceEl = document;
@@ -295,9 +295,12 @@
 				throw new Error('IMPETUS: update function not defined.');
 			}
 			
-			if (typeof cfg.multiplier !== 'undefined')
-			multiplier = cfg.multiplier || multiplier;
-			friction = cfg.friction || friction;
+			if (typeof cfg.multiplier !== 'undefined') {
+				multiplier = cfg.multiplier || multiplier;
+			}
+			if (typeof cfg.friction !== 'undefined') {
+				friction = cfg.friction || friction;
+			}
 			
 			if (cfg.initialValues) {
 				if (cfg.initialValues[0]) {
