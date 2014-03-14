@@ -15,12 +15,30 @@ module.exports = function(grunt) {
                     ' * Licensed <%= pkg.licenses.type %> <<%= pkg.licenses.url %>>\n' +
                     ' */\n'
             }
+        },
+        bump: {
+            options: {
+                updateConfigs: ['pkg'],
+                commitFiles: ['-a'],
+                //push: false,
+                pushTo: 'origin'
+            }
         }
     
     });
     
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-bump');
+    
     
     grunt.registerTask('default', ['uglify']);
+    
+    grunt.registerTask('release', function(bumpOption) {
+        var bumpOnlyTask = 'bump-only';
+        if (bumpOption) {
+            bumpOnlyTask += ':' + bumpOption;
+        }
+        grunt.task.run(bumpOnlyTask, 'uglify', 'bump-commit');
+    });
     
 };
