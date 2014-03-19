@@ -8,11 +8,12 @@
 	var Impetus = function(cfg) {
 		'use strict';
 		
-		var sourceEl, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
+		var sourceEl, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY, stopThreshold;
 		var targetX = 0;
 		var targetY = 0;
 		var multiplier = 1;
 		var friction = 0.92;
+		var stopThresholdDefault = stopThreshold = 0.4;
 		var ticking = false;
 		var pointerActive = false;
 		var paused = false;
@@ -53,6 +54,7 @@
 		 */
 		this.setMultiplier = function(val) {
 			multiplier = val;
+			stopThreshold = stopThresholdDefault * multiplier;
 		};
 		
 		/**
@@ -260,7 +262,7 @@
 			decVelX *= friction;
 			decVelY *= friction;
 			
-			if (Math.abs(decVelX) > 0.4 || Math.abs(decVelY) > 0.4) {
+			if (Math.abs(decVelX) > stopThreshold || Math.abs(decVelY) > stopThreshold) {
 				targetX += decVelX;
 				targetY += decVelY;
 				
@@ -297,6 +299,7 @@
 			
 			if (typeof cfg.multiplier !== 'undefined') {
 				multiplier = cfg.multiplier || multiplier;
+				stopThreshold = stopThresholdDefault * multiplier;
 			}
 			if (typeof cfg.friction !== 'undefined') {
 				friction = cfg.friction || friction;
