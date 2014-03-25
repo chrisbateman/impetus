@@ -1,6 +1,5 @@
 /* Impetus.js
  * http://chrisbateman.github.com/impetus
- *
  * Copyright (c) 2014 Chris Bateman
  * Licensed under the MIT license */
 
@@ -8,12 +7,13 @@
 	var Impetus = function(cfg) {
 		'use strict';
 		
-		var sourceEl, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY, stopThreshold;
+		var sourceEl, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
 		var targetX = 0;
 		var targetY = 0;
 		var multiplier = 1;
 		var friction = 0.92;
-		var stopThresholdDefault = stopThreshold = 0.4;
+		var stopThresholdDefault = 0.4;
+		var stopThreshold = stopThresholdDefault;
 		var ticking = false;
 		var pointerActive = false;
 		var paused = false;
