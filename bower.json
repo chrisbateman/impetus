@@ -1,0 +1,22 @@
+{
+    "name": "Chris Bateman",
+    "version": "0.6.4",
+    "homepage": "https://github.com/chrisbateman/impetus",
+    "authors": [
+        "Chris Bateman <chris@cbateman.com>"
+    ],
+    "main": "impetus.js",
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "keywords": [
+        "momentum"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "test"
+    ]
+}

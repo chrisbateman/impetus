@@ -2,7 +2,9 @@ Impetus.js
 =========
 Add momentum to anything. It's like iScroll, except not for scrolling. Supports mouse and touch events.
 
-Check out the demos on the [home page](http://chrisbateman.github.io/impetus)
+Check out the demos on the [home page](http://chrisbateman.github.io/impetus).
+
+Impetus will probably never support anything other than simple momentum. If you need scrolling or touch carousels or anything like that, this probably isn't the tool you're looking for.
 
 
 ### Usage ###
