@@ -257,7 +257,9 @@
 		 * Animates values slowing down
 		 */
 		var stepDecelAnim = function() {
-			if (!decelerating) return;
+			if (!decelerating) {
+				return;
+			}
 			
 			decVelX *= friction;
 			decVelY *= friction;
@@ -324,7 +326,7 @@
 	};
 	
 	// AMD
-	if (typeof define === "function" && define.amd) {
+	if (typeof define === 'function' && define.amd) {
 		define(function() {
 			return Impetus;
 		});
