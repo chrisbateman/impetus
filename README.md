@@ -10,7 +10,7 @@ Impetus will probably never support anything other than simple momentum. If you 
 ### Usage ###
 
 ```javascript
-var instance = new Impetus({
+var myImpetus = new Impetus({
     source: myNode,
     update: function(x, y) {
         // whatever you want to do with the values
@@ -58,7 +58,7 @@ var instance = new Impetus({
 			<th scope="row" align="left">initialValues</th>
 			<td>Number[2]</td>
 			<td>[0, 0]</td>
-			<td>The initial x and y values</td>
+			<td>Array of initial x and y values</td>
 		</tr>
 		<tr>
 			<th scope="row" align="left">boundX</th>
