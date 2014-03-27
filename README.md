@@ -8,6 +8,7 @@ Impetus will probably never support anything other than simple momentum. If you 
 
 
 ### Usage ###
+You give it an area to listen to for touch or mouse events, and it gives you the x and y values with some momentum.
 
 ```javascript
 var myImpetus = new Impetus({
