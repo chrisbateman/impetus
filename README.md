@@ -8,8 +8,6 @@ Impetus will probably never support anything other than simple momentum. If you 
 
 
 ### Usage ###
-You give it an area to listen to for touch or mouse events, and it gives you the x and y values with some momentum.
-
 ```javascript
 var myImpetus = new Impetus({
     source: myNode,
@@ -18,6 +16,9 @@ var myImpetus = new Impetus({
     }
 });
 ```
+You give it an area to listen to for touch or mouse events, and it gives you the x and y values with some momentum.
+
+Impetus will register itself as an AMD module if it's available.
 
 
 ### Constructor Options ###
