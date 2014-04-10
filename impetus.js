@@ -48,6 +48,21 @@
 		};
 		
 		/**
+		 * Update the current x and y values
+		 * @public
+		 * @param {Number} x
+		 * @param {Number} y
+		 */
+		this.setValues = function(x, y) {
+			if (typeof x === 'number') {
+				targetX = x;
+			}
+			if (typeof y === 'number') {
+				targetY = y;
+			}
+		};
+		
+		/**
 		 * Update the multiplier value
 		 * @public
 		 * @param {Number} val

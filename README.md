@@ -88,16 +88,20 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row" align="left">instance.pause()</th>
+			<th scope="row" align="left">.pause()</th>
 			<td>Disable movement processing</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">instance.resume()</th>
+			<th scope="row" align="left">.resume()</th>
 			<td>Re-enable movement processing</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">instance.setMultiplier( &lt;number&gt; )</th>
+			<th scope="row" align="left">.setMultiplier( &lt;number&gt; )</th>
 			<td>Adjust the multiplier in flight</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left">.setValues( &lt;number&gt; , &lt;number&gt; )</th>
+			<td>Adjust the current x and y output values</td>
 		</tr>
 	</tbody>
 </table>
