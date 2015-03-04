@@ -344,7 +344,6 @@
 							decVelY = (diff.y + adjust) * bounceAcceleration;
 						}
 					}
-					//console.log(diff.y + ' - ' + decVelY);
 				} else {
 					if (diff.x !== 0) {
 						if (diff.x > 0) {
@@ -363,14 +362,12 @@
 						decVelY = 0;
 					}
 				}
-				//console.log(decVelY + ' - ' + targetY);
 				
 				callUpdateCallback();
 				
 				requestAnimFrame(stepDecelAnim);
 			} else {
 				decelerating = false;
-				console.log('stop');
 			}
 		};
 		
