@@ -196,18 +196,19 @@
 		 * Calculate new values, call update function
 		 */
 		var update = function() {
-			targetX += (pointerCurrentX - pointerLastX) * multiplier;
-			targetY += (pointerCurrentY - pointerLastY) * multiplier;
+			var pointerChangeX = pointerCurrentX - pointerLastX;
+			var pointerChangeY = pointerCurrentY - pointerLastY;
+			
+			targetX += pointerChangeX * multiplier;
+			targetY += pointerChangeY * multiplier;
 			
 			if (bounces) {
 				var diff = checkBounds();
 				if (diff.x !== 0) {
-					var pointerChangeX = pointerCurrentX - pointerLastX;
-					targetX -= pointerChangeX * 0.5;
+					targetX -= pointerChangeX * dragOutOfBoundsMultiplier(diff.x) * multiplier;
 				}
 				if (diff.y !== 0) {
-					var pointerChangeY = pointerCurrentY - pointerLastY;
-					targetY -= pointerChangeY * 0.5;
+					targetY -= pointerChangeY * dragOutOfBoundsMultiplier(diff.y) * multiplier;
 				}
 			} else {
 				checkBounds(true);
@@ -219,6 +220,16 @@
 			pointerLastY = pointerCurrentY;
 			ticking = false;
 		};
+		
+		
+		/**
+		 * Returns a value from around 0.5 to 1, based on distance
+		 * @param {Number} val
+		 */
+		var dragOutOfBoundsMultiplier = function(val) {
+			return 0.000005 * Math.pow(val, 2) + 0.0001 * val + 0.55;
+		};
+		
 		
 		/**
 		 * prevents animating faster than current framerate
