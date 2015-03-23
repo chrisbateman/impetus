@@ -1,6 +1,7 @@
 {
     "name": "Impetus",
     "version": "0.7.0",
+    "main": "impetus.js",
     "homepage": "http://chrisbateman.github.io/impetus/",
     "author": "Chris Bateman",
     "licenses": {
