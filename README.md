@@ -75,7 +75,7 @@ Impetus will register itself as an AMD module if it's available.
 			<td>Array of low and high values. X values will remain within these bounds</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">bounces</th>
+			<th scope="row" align="left">bounce</th>
 			<td>Boolean</td>
 			<td>true</td>
 			<td>Whether to stretch and rebound values when pulled outside the bounds</td>

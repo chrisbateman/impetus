@@ -19,9 +19,9 @@
 		var paused = false;
 		var decelerating = false;
 		var trackingPoints = [];
-		var bounces = true;
-		var bounceDeceleration = 0.05;
-		var bounceAcceleration = 0.09;
+		var bounce = true;
+		var bounceDeceleration = 0.04;
+		var bounceAcceleration = 0.11;
 		
 		
 		/**
@@ -202,7 +202,7 @@
 			targetX += pointerChangeX * multiplier;
 			targetY += pointerChangeY * multiplier;
 			
-			if (bounces) {
+			if (bounce) {
 				var diff = checkBounds();
 				if (diff.x !== 0) {
 					targetX -= pointerChangeX * dragOutOfBoundsMultiplier(diff.x) * multiplier;
@@ -336,7 +336,7 @@
 			
 			if ((Math.abs(decVelX) > stopThreshold || Math.abs(decVelY) > stopThreshold) || !diff.inBounds) {
 				
-				if (bounces) {
+				if (bounce) {
 					var reboundAdjust = 2.5;
 					
 					if (diff.x !== 0) {
@@ -411,8 +411,8 @@
 			if (typeof cfg.friction !== 'undefined') {
 				friction = cfg.friction || friction;
 			}
-			if (cfg.bounces === false) {
-				bounces = false;
+			if (cfg.bounce === false) {
+				bounce = false;
 			}
 			
 			if (cfg.initialValues) {
