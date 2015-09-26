@@ -1,13 +1,10 @@
 {
-  "name": "Impetus",
+  "name": "impetus",
   "version": "0.8.1",
   "main": "impetus.js",
   "homepage": "http://chrisbateman.github.io/impetus/",
   "author": "Chris Bateman",
-  "licenses": {
-    "type": "MIT",
-    "url": "https://raw.github.com/chrisbateman/impetus/master/LICENSE"
-  },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:chrisbateman/impetus.git"
