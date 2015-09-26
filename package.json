@@ -1,20 +1,20 @@
 {
-    "name": "Impetus",
-    "version": "0.8.0",
-    "main": "impetus.js",
-    "homepage": "http://chrisbateman.github.io/impetus/",
-    "author": "Chris Bateman",
-    "licenses": {
-        "type": "MIT",
-        "url": "https://raw.github.com/chrisbateman/impetus/master/LICENSE"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:chrisbateman/impetus.git"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.2",
-        "grunt-contrib-uglify": "~0.4.0",
-        "grunt-bump": "0.0.13"
-    }
+  "name": "Impetus",
+  "version": "0.8.1",
+  "main": "impetus.js",
+  "homepage": "http://chrisbateman.github.io/impetus/",
+  "author": "Chris Bateman",
+  "licenses": {
+    "type": "MIT",
+    "url": "https://raw.github.com/chrisbateman/impetus/master/LICENSE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chrisbateman/impetus.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-bump": "0.0.13"
+  }
 }
