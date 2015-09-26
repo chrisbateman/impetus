@@ -433,11 +433,15 @@
 		})();
 	};
 	
-	// AMD
+	
 	if (typeof define === 'function' && define.amd) {
+		// AMD
 		define(function() {
 			return Impetus;
 		});
+	} else if (typeof module === 'object' && module.exports) {
+		// CommonJS
+		module.exports = Impetus;
 	} else {
 		this.Impetus = Impetus;
 	}
