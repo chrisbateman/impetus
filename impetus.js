@@ -12,13 +12,16 @@
 		var targetY = 0;
 		var multiplier = 1;
 		var friction = 0.92;
-		var stopThresholdDefault = 0.4;
+		var stopThresholdDefault = 0.3;
 		var stopThreshold = stopThresholdDefault;
 		var ticking = false;
 		var pointerActive = false;
 		var paused = false;
 		var decelerating = false;
 		var trackingPoints = [];
+		var bounce = true;
+		var bounceDeceleration = 0.04;
+		var bounceAcceleration = 0.11;
 		
 		
 		/**
@@ -193,16 +196,40 @@
 		 * Calculate new values, call update function
 		 */
 		var update = function() {
-			targetX += (pointerCurrentX - pointerLastX) * multiplier;
-			targetY += (pointerCurrentY - pointerLastY) * multiplier;
+			var pointerChangeX = pointerCurrentX - pointerLastX;
+			var pointerChangeY = pointerCurrentY - pointerLastY;
 			
-			checkBounds();
+			targetX += pointerChangeX * multiplier;
+			targetY += pointerChangeY * multiplier;
+			
+			if (bounce) {
+				var diff = checkBounds();
+				if (diff.x !== 0) {
+					targetX -= pointerChangeX * dragOutOfBoundsMultiplier(diff.x) * multiplier;
+				}
+				if (diff.y !== 0) {
+					targetY -= pointerChangeY * dragOutOfBoundsMultiplier(diff.y) * multiplier;
+				}
+			} else {
+				checkBounds(true);
+			}
+			
 			callUpdateCallback();
 			
 			pointerLastX = pointerCurrentX;
 			pointerLastY = pointerCurrentY;
 			ticking = false;
 		};
+		
+		
+		/**
+		 * Returns a value from around 0.5 to 1, based on distance
+		 * @param {Number} val
+		 */
+		var dragOutOfBoundsMultiplier = function(val) {
+			return 0.000005 * Math.pow(val, 2) + 0.0001 * val + 0.55;
+		};
+		
 		
 		/**
 		 * prevents animating faster than current framerate
@@ -228,23 +255,43 @@
 			}
 		};
 		
+		
 		/**
-		 * Keep values in bounds, if available
+		 * Determine position relative to bounds
+		 * @param {Boolean} restrict Whether to restrict target to bounds
 		 */
-		var checkBounds = function() {
+		var checkBounds = function(restrict) {
+			var xDiff = 0;
+			var yDiff = 0;
+			
 			if (boundXmin !== undefined && targetX < boundXmin) {
-				targetX = boundXmin;
+				xDiff = boundXmin - targetX;
+			} else if (boundXmax !== undefined && targetX > boundXmax) {
+				xDiff = boundXmax - targetX;
 			}
-			if (boundXmax !== undefined && targetX > boundXmax) {
-				targetX = boundXmax;
-			}
+			
 			if (boundYmin !== undefined && targetY < boundYmin) {
-				targetY = boundYmin;
+				yDiff = boundYmin - targetY;
+			} else if (boundYmax !== undefined && targetY > boundYmax) {
+				yDiff = boundYmax - targetY;
 			}
-			if (boundYmax !== undefined && targetY > boundYmax) {
-				targetY = boundYmax;
+			
+			if (restrict) {
+				if (xDiff !== 0) {
+					targetX = (xDiff > 0) ? boundXmin : boundXmax;
+				}
+				if (yDiff !== 0) {
+					targetY = (yDiff > 0) ? boundYmin : boundYmax;
+				}
 			}
+			
+			return {
+				x: xDiff,
+				y: yDiff,
+				inBounds: xDiff === 0 && yDiff === 0
+			};
 		};
+		
 		
 		/**
 		 * Initialize animation of values coming to a stop
@@ -259,14 +306,17 @@
 			
 			var D = (timeOffset / 15) / multiplier;
 			
-			decVelX = xOffset / D;
-			decVelY = yOffset / D;
+			decVelX = (xOffset / D) || 0; // prevent NaN
+			decVelY = (yOffset / D) || 0;
 			
-			if (Math.abs(decVelX) > 1 || Math.abs(decVelY) > 1) {
+			var diff = checkBounds();
+			
+			if ((Math.abs(decVelX) > 1 || Math.abs(decVelY) > 1) || !diff.inBounds){
 				decelerating = true;
 				requestAnimFrame(stepDecelAnim);
 			}
 		};
+		
 		
 		/**
 		 * Animates values slowing down
@@ -279,13 +329,51 @@
 			decVelX *= friction;
 			decVelY *= friction;
 			
-			if (Math.abs(decVelX) > stopThreshold || Math.abs(decVelY) > stopThreshold) {
-				targetX += decVelX;
-				targetY += decVelY;
+			targetX += decVelX;
+			targetY += decVelY;
+			
+			var diff = checkBounds();
+			
+			if ((Math.abs(decVelX) > stopThreshold || Math.abs(decVelY) > stopThreshold) || !diff.inBounds) {
 				
-				if (checkBounds()) {
-					decelerating = false;
+				if (bounce) {
+					var reboundAdjust = 2.5;
+					
+					if (diff.x !== 0) {
+						if (diff.x * decVelX <= 0) {
+							decVelX += diff.x * bounceDeceleration;
+						} else {
+							var adjust = (diff.x > 0) ? reboundAdjust : -reboundAdjust;
+							decVelX = (diff.x + adjust) * bounceAcceleration;
+						}
+					}
+					if (diff.y !== 0) {
+						if (diff.y * decVelY <= 0) {
+							decVelY += diff.y * bounceDeceleration;
+						} else {
+							var adjust = (diff.y > 0) ? reboundAdjust : -reboundAdjust;
+							decVelY = (diff.y + adjust) * bounceAcceleration;
+						}
+					}
+				} else {
+					if (diff.x !== 0) {
+						if (diff.x > 0) {
+							targetX = boundXmin;
+						} else {
+							targetX = boundXmax;
+						}
+						decVelX = 0;
+					}
+					if (diff.y !== 0) {
+						if (diff.y > 0) {
+							targetY = boundYmin;
+						} else {
+							targetY = boundYmax;
+						}
+						decVelY = 0;
+					}
 				}
+				
 				callUpdateCallback();
 				
 				requestAnimFrame(stepDecelAnim);
@@ -293,6 +381,8 @@
 				decelerating = false;
 			}
 		};
+		
+		
 		
 		
 		/**
@@ -320,6 +410,9 @@
 			}
 			if (typeof cfg.friction !== 'undefined') {
 				friction = cfg.friction || friction;
+			}
+			if (cfg.bounce === false) {
+				bounce = false;
 			}
 			
 			if (cfg.initialValues) {
