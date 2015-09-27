@@ -205,7 +205,7 @@
 		source: dotEl,
 		initialValues: [dotParent.offsetWidth/2 - 25, 45],
 		boundX: [0, dotParent.offsetWidth - dotEl.offsetWidth],
-		//boundY: [0, dotParent.offsetHeight - dotEl.offsetHeight],
+		boundY: [0, dotParent.offsetHeight - dotEl.offsetHeight],
 		update: function(x, y) {
 			this.style.left = x + 'px';
 			this.style.top = y + 'px';
