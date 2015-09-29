@@ -1,37 +1,75 @@
-/* Impetus.js
- * http://chrisbateman.github.com/impetus
- * Copyright (c) 2014 Chris Bateman
- * Licensed under the MIT license */
+/**
+ * Impetus.js
+ * Copyright (c) 2015 Chris Bateman
+ * @license MIT
+ */
 
-(function() {
-	var Impetus = function(cfg) {
-		'use strict';
-		
-		var sourceEl, updateCallback, boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
+
+const stopThresholdDefault = 0.3;
+const bounceDeceleration = 0.04;
+const bounceAcceleration = 0.11;
+
+
+export default class Impetus {
+	constructor({
+		source: sourceEl = document,
+		update: updateCallback,
+		multiplier = 1,
+		friction = 0.92,
+		initialValues,
+		boundX,
+		boundY,
+		bounce = true
+	}) {
+		var boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
 		var targetX = 0;
 		var targetY = 0;
-		var multiplier = 1;
-		var friction = 0.92;
-		var stopThresholdDefault = 0.3;
-		var stopThreshold = stopThresholdDefault;
+		var stopThreshold = stopThresholdDefault * multiplier;
 		var ticking = false;
 		var pointerActive = false;
 		var paused = false;
 		var decelerating = false;
 		var trackingPoints = [];
-		var bounce = true;
-		var bounceDeceleration = 0.04;
-		var bounceAcceleration = 0.11;
 		
 		
 		/**
-		 * @see http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+		 * Initialize instance
 		 */
-		var requestAnimFrame = (function(){
-			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
-				window.setTimeout(callback, 1000 / 60);
-			};
+		(function init() {
+			sourceEl = (typeof sourceEl === 'string') ? document.querySelector(sourceEl) : sourceEl;
+			if (!sourceEl) {
+				throw new Error('IMPETUS: source not found.');
+			}
+			
+			if (!updateCallback) {
+				throw new Error('IMPETUS: update function not defined.');
+			}
+			
+			if (initialValues) {
+				if (initialValues[0]) {
+					targetX = initialValues[0];
+				}
+				if (initialValues[1]) {
+					targetY = initialValues[1];
+				}
+				callUpdateCallback();
+			}
+			
+			// Initialize bound values
+			if (boundX) {
+				boundXmin = boundX[0];
+				boundXmax = boundX[1];
+			}
+			if (boundY) {
+				boundYmin = boundY[0];
+				boundYmax = boundY[1];
+			}
+			
+			sourceEl.addEventListener('touchstart', onDown);
+			sourceEl.addEventListener('mousedown', onDown);
 		})();
+		
+		
 		
 		/**
 		 * Disable movement processing
@@ -78,16 +116,16 @@
 		/**
 		 * Executes the update function
 		 */
-		var callUpdateCallback = function() {
+		function callUpdateCallback() {
 			updateCallback.call(sourceEl, targetX, targetY);
-		};
+		}
 		
 		/**
 		 * Creates a custom normalized event object from touch and mouse events
 		 * @param  {Event} ev
 		 * @returns {Object} with x, y, and id properties
 		 */
-		var normalizeEvent = function(ev) {
+		function normalizeEvent(ev) {
 			if (ev.type === 'touchmove' || ev.type === 'touchstart' || ev.type === 'touchend') {
 				var touch = ev.targetTouches[0] || ev.changedTouches[0];
 				return {
@@ -102,13 +140,13 @@
 					id: null
 				};
 			}
-		};
+		}
 		
 		/**
 		 * Initializes movement tracking
 		 * @param  {Object} ev Normalized event
 		 */
-		var onDown = function(ev) {
+		function onDown(ev) {
 			var event = normalizeEvent(ev);
 			if (!pointerActive && !paused) {
 				pointerActive = true;
@@ -126,13 +164,13 @@
 				document.addEventListener('mousemove', onMove);
 				document.addEventListener('mouseup', onUp);
 			}
-		};
+		}
 		
 		/**
 		 * Handles move events
 		 * @param  {Object} ev Normalized event
 		 */
-		var onMove = function(ev) {
+		function onMove(ev) {
 			ev.preventDefault();
 			var event = normalizeEvent(ev);
 			
@@ -142,24 +180,24 @@
 				addTrackingPoint(pointerLastX, pointerLastY);
 				requestTick();
 			}
-		};
+		}
 		
 		/**
 		 * Handles up/end events
-		 * @param  {Object} ev Normalized event
+		 * @param {Object} ev Normalized event
 		 */
-		var onUp = function(ev) {
+		function onUp(ev) {
 			var event = normalizeEvent(ev);
 			
 			if (pointerActive && event.id === pointerId) {
 				stopTracking();
 			}
-		};
+		}
 		
 		/**
 		 * Stops movement tracking, starts animation
 		 */
-		var stopTracking = function() {
+		function stopTracking() {
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY);
 			startDecelAnim();
@@ -169,14 +207,14 @@
 			document.removeEventListener('touchcancel', stopTracking);
 			document.removeEventListener('mouseup', onUp);
 			document.removeEventListener('mousemove', onMove);
-		};
+		}
 		
 		/**
 		 * Records movement for the last 100ms
 		 * @param {number} x
 		 * @param {number} y [description]
 		 */
-		var addTrackingPoint = function(x, y) {
+		function addTrackingPoint(x, y) {
 			var time = Date.now();
 			while (trackingPoints.length > 0) {
 				if (time - trackingPoints[0].time <= 100) {
@@ -185,17 +223,13 @@
 				trackingPoints.shift();
 			}
 			
-			trackingPoints.push({
-				x: x,
-				y: y,
-				time: time
-			});
-		};
+			trackingPoints.push({x, y, time});
+		}
 		
 		/**
 		 * Calculate new values, call update function
 		 */
-		var update = function() {
+		function updateAndRender() {
 			var pointerChangeX = pointerCurrentX - pointerLastX;
 			var pointerChangeY = pointerCurrentY - pointerLastY;
 			
@@ -203,7 +237,7 @@
 			targetY += pointerChangeY * multiplier;
 			
 			if (bounce) {
-				var diff = checkBounds();
+				let diff = checkBounds();
 				if (diff.x !== 0) {
 					targetX -= pointerChangeX * dragOutOfBoundsMultiplier(diff.x) * multiplier;
 				}
@@ -219,48 +253,34 @@
 			pointerLastX = pointerCurrentX;
 			pointerLastY = pointerCurrentY;
 			ticking = false;
-		};
+		}
 		
 		
 		/**
 		 * Returns a value from around 0.5 to 1, based on distance
 		 * @param {Number} val
 		 */
-		var dragOutOfBoundsMultiplier = function(val) {
+		function dragOutOfBoundsMultiplier(val) {
 			return 0.000005 * Math.pow(val, 2) + 0.0001 * val + 0.55;
-		};
+		}
 		
 		
 		/**
 		 * prevents animating faster than current framerate
 		 */
-		var requestTick = function() {
+		function requestTick() {
 			if (!ticking) {
-				requestAnimFrame(update);
+				requestAnimFrame(updateAndRender);
 			}
 			ticking = true;
-		};
-		
-		/**
-		 * Initializes the bound values
-		 */
-		var initBounds = function() {
-			if (cfg.boundX) {
-				boundXmin = cfg.boundX[0];
-				boundXmax = cfg.boundX[1];
-			}
-			if (cfg.boundY) {
-				boundYmin = cfg.boundY[0];
-				boundYmax = cfg.boundY[1];
-			}
-		};
+		}
 		
 		
 		/**
 		 * Determine position relative to bounds
 		 * @param {Boolean} restrict Whether to restrict target to bounds
 		 */
-		var checkBounds = function(restrict) {
+		function checkBounds(restrict) {
 			var xDiff = 0;
 			var yDiff = 0;
 			
@@ -290,13 +310,13 @@
 				y: yDiff,
 				inBounds: xDiff === 0 && yDiff === 0
 			};
-		};
+		}
 		
 		
 		/**
 		 * Initialize animation of values coming to a stop
 		 */
-		var startDecelAnim = function() {
+		function startDecelAnim() {
 			var firstPoint = trackingPoints[0];
 			var lastPoint = trackingPoints[trackingPoints.length - 1];
 			
@@ -315,13 +335,13 @@
 				decelerating = true;
 				requestAnimFrame(stepDecelAnim);
 			}
-		};
+		}
 		
 		
 		/**
 		 * Animates values slowing down
 		 */
-		var stepDecelAnim = function() {
+		function stepDecelAnim() {
 			if (!decelerating) {
 				return;
 			}
@@ -337,13 +357,13 @@
 			if ((Math.abs(decVelX) > stopThreshold || Math.abs(decVelY) > stopThreshold) || !diff.inBounds) {
 				
 				if (bounce) {
-					var reboundAdjust = 2.5;
+					let reboundAdjust = 2.5;
 					
 					if (diff.x !== 0) {
 						if (diff.x * decVelX <= 0) {
 							decVelX += diff.x * bounceDeceleration;
 						} else {
-							var adjust = (diff.x > 0) ? reboundAdjust : -reboundAdjust;
+							let adjust = (diff.x > 0) ? reboundAdjust : -reboundAdjust;
 							decVelX = (diff.x + adjust) * bounceAcceleration;
 						}
 					}
@@ -351,7 +371,7 @@
 						if (diff.y * decVelY <= 0) {
 							decVelY += diff.y * bounceDeceleration;
 						} else {
-							var adjust = (diff.y > 0) ? reboundAdjust : -reboundAdjust;
+							let adjust = (diff.y > 0) ? reboundAdjust : -reboundAdjust;
 							decVelY = (diff.y + adjust) * bounceAcceleration;
 						}
 					}
@@ -380,70 +400,17 @@
 			} else {
 				decelerating = false;
 			}
-		};
-		
-		
-		
-		
-		/**
-		 * Initialize instance
-		 */
-		(function init() {
-			if (cfg.source) {
-				sourceEl = (typeof cfg.source === 'string') ? document.querySelector(cfg.source) : cfg.source;
-				if (!sourceEl) {
-					throw new Error('IMPETUS: source not found.');
-				}
-			} else {
-				sourceEl = document;
-			}
-			
-			if (cfg.update) {
-				updateCallback = cfg.update;
-			} else {
-				throw new Error('IMPETUS: update function not defined.');
-			}
-			
-			if (typeof cfg.multiplier !== 'undefined') {
-				multiplier = cfg.multiplier || multiplier;
-				stopThreshold = stopThresholdDefault * multiplier;
-			}
-			if (typeof cfg.friction !== 'undefined') {
-				friction = cfg.friction || friction;
-			}
-			if (cfg.bounce === false) {
-				bounce = false;
-			}
-			
-			if (cfg.initialValues) {
-				if (cfg.initialValues[0]) {
-					targetX = cfg.initialValues[0];
-				}
-				if (cfg.initialValues[1]) {
-					targetY = cfg.initialValues[1];
-				}
-				callUpdateCallback();
-			}
-			
-			initBounds();
-			
-			sourceEl.addEventListener('touchstart', onDown);
-			sourceEl.addEventListener('mousedown', onDown);
-			
-		})();
-	};
-	
-	
-	if (typeof define === 'function' && define.amd) {
-		// AMD
-		define(function() {
-			return Impetus;
-		});
-	} else if (typeof module === 'object' && module.exports) {
-		// CommonJS
-		module.exports = Impetus;
-	} else {
-		this.Impetus = Impetus;
+		}
 	}
-	
+}
+
+
+
+/**
+ * @see http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+ */
+const requestAnimFrame = (function(){
+	return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
+		window.setTimeout(callback, 1000 / 60);
+	};
 })();
