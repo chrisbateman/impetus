@@ -1,9 +1,3 @@
-/**
- * Impetus.js
- * Copyright (c) 2015 Chris Bateman
- * @license MIT
- */
-
 
 const stopThresholdDefault = 0.3;
 const bounceDeceleration = 0.04;
