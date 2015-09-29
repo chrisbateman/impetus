@@ -11,12 +11,6 @@
 		global.Impetus = mod.exports;
 	}
 })(this, function (exports, module) {
-	/**
-  * Impetus.js
-  * Copyright (c) 2015 Chris Bateman
-  * @license MIT
-  */
-
 	'use strict';
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
