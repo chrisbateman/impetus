@@ -19,6 +19,9 @@
     "type": "git",
     "url": "git@github.com:chrisbateman/impetus.git"
   },
+  "bugs": {
+    "url": "https://github.com/chrisbateman/impetus/issues"
+  },
   "devDependencies": {
     "babel": "^5.8.23",
     "uglify-js": "^2.4.24"
