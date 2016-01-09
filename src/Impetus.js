@@ -141,6 +141,11 @@ export default class Impetus {
 		 * @param  {Object} ev Normalized event
 		 */
 		function onDown(ev) {
+			//If we've gone into multitouch, get out.
+	                if (pointerActive && ev.touches.length > 1){
+	                    onUp(ev);
+	                }
+	                
 			var event = normalizeEvent(ev);
 			if (!pointerActive && !paused) {
 				pointerActive = true;
@@ -183,7 +188,7 @@ export default class Impetus {
 		function onUp(ev) {
 			var event = normalizeEvent(ev);
 			
-			if (pointerActive && event.id === pointerId) {
+			if (pointerActive) {
 				stopTracking();
 			}
 		}
