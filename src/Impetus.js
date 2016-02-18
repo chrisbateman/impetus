@@ -13,7 +13,8 @@ export default class Impetus {
 		initialValues,
 		boundX,
 		boundY,
-		bounce = true
+		bounce = true,
+		lockAxis
 	}) {
 		var boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
 		var targetX = 0;
@@ -24,7 +25,9 @@ export default class Impetus {
 		var paused = false;
 		var decelerating = false;
 		var trackingPoints = [];
-		
+		var waitingPoints = [];
+        var waitPoints = 3;
+        var axis;		
 		
 		/**
 		 * Initialize instance
@@ -172,7 +175,23 @@ export default class Impetus {
 				pointerCurrentX = event.x;
 				pointerCurrentY = event.y;
 				addTrackingPoint(pointerLastX, pointerLastY);
-				requestTick();
+
+				if(!axis) waitingPoints.push({x:pointerCurrentX, y:pointerCurrentY})
+
+                if(!axis && waitingPoints.length <= waitPoints){
+                    if(waitingPoints.length == waitPoints){
+                        setAxis()
+                    }
+                }else{
+                	if(lockAxis){
+                		if(lockAxis==axis){
+                			ev.stopImmediatePropagation();
+                			requestTick();
+                		}
+                	}else{
+                		requestTick();
+                	}
+                }
 			}
 		}
 		
@@ -185,6 +204,8 @@ export default class Impetus {
 			
 			if (pointerActive && event.id === pointerId) {
 				stopTracking();
+				axis = null;
+                waitingPoints=[]
 			}
 		}
 		
@@ -219,6 +240,19 @@ export default class Impetus {
 			
 			trackingPoints.push({x, y, time});
 		}
+
+
+		/**
+		 * Set the current main axis
+		 */
+		function setAxis(){
+            var first = waitingPoints[0]
+            var last = waitingPoints[waitingPoints.length-1]
+            var diffX = Math.abs(last.x - first.x)
+            var diffY = Math.abs(last.y - first.y)
+            axis = (diffX > diffY) ? 'x' : 'y'
+        }
+
 		
 		/**
 		 * Calculate new values, call update function

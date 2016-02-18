@@ -32,6 +32,7 @@
 		var boundY = _ref.boundY;
 		var _ref$bounce = _ref.bounce;
 		var bounce = _ref$bounce === undefined ? true : _ref$bounce;
+		var lockAxis = _ref.lockAxis;
 
 		_classCallCheck(this, Impetus);
 
@@ -44,6 +45,9 @@
 		var paused = false;
 		var decelerating = false;
 		var trackingPoints = [];
+		var waitingPoints = [];
+		var waitPoints = 3;
+		var axis;
 
 		/**
    * Initialize instance
@@ -190,7 +194,23 @@
 				pointerCurrentX = event.x;
 				pointerCurrentY = event.y;
 				addTrackingPoint(pointerLastX, pointerLastY);
-				requestTick();
+
+				if (!axis) waitingPoints.push({ x: pointerCurrentX, y: pointerCurrentY });
+
+				if (!axis && waitingPoints.length <= waitPoints) {
+					if (waitingPoints.length == waitPoints) {
+						setAxis();
+					}
+				} else {
+					if (lockAxis) {
+						if (lockAxis == axis) {
+							ev.stopImmediatePropagation();
+							requestTick();
+						}
+					} else {
+						requestTick();
+					}
+				}
 			}
 		}
 
@@ -203,6 +223,8 @@
 
 			if (pointerActive && event.id === pointerId) {
 				stopTracking();
+				axis = null;
+				waitingPoints = [];
 			}
 		}
 
@@ -236,6 +258,17 @@
 			}
 
 			trackingPoints.push({ x: x, y: y, time: time });
+		}
+
+		/**
+   * Set the current main axis
+   */
+		function setAxis() {
+			var first = waitingPoints[0];
+			var last = waitingPoints[waitingPoints.length - 1];
+			var diffX = Math.abs(last.x - first.x);
+			var diffY = Math.abs(last.y - first.y);
+			axis = diffX > diffY ? 'x' : 'y';
 		}
 
 		/**
