@@ -63,7 +63,20 @@ export default class Impetus {
 			sourceEl.addEventListener('mousedown', onDown);
 		})();
 		
-		
+		/**
+		 * In edge cases where you may need to
+		 * reinstanciate Impetus on the same sourceEl
+		 * this will remove the previous event listeners
+		 */
+		this.destroy = function() {
+			sourceEl.removeEventListener('touchstart', onDown);
+			sourceEl.removeEventListener('mousedown', onDown);
+			// however it won't "destroy" a reference
+			// to instance if you'd like to do that
+			// it returns null as a convinience.
+			// ex: `instance = instance.destroy();`
+			return null;
+		};
 		
 		/**
 		 * Disable movement processing
