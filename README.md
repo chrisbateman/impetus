@@ -33,9 +33,9 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row" align="left">source (required)</th>
+			<th scope="row" align="left">source</th>
 			<td>HTMLElement|String</td>
-			<td>-</td>
+			<td>document</td>
 			<td>Element reference or query string for the target on which to listen for movement.</td>
 		</tr>
 		<tr>
