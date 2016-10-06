@@ -125,6 +125,26 @@
 		};
 
 		/**
+   * Update boundX value
+   * @public
+   * @param {Number[]} boundX
+   */
+		this.setBoundX = function (boundX) {
+			boundXmin = boundX[0];
+			boundXmax = boundX[1];
+		};
+
+		/**
+   * Update boundY value
+   * @public
+   * @param {Number[]} boundY
+   */
+		this.setBoundY = function (boundY) {
+			boundYmin = boundY[0];
+			boundYmax = boundY[1];
+		};
+
+		/**
    * Executes the update function
    */
 		function callUpdateCallback() {
