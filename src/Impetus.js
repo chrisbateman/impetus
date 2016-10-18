@@ -177,6 +177,7 @@ export default class Impetus {
 				document.addEventListener('touchcancel', stopTracking);
 				document.addEventListener('mousemove', onMove);
 				document.addEventListener('mouseup', onUp);
+				document.addEventListener('mouseout', onUp);
 			}
 		}
 		
@@ -220,6 +221,7 @@ export default class Impetus {
 			document.removeEventListener('touchend', onUp);
 			document.removeEventListener('touchcancel', stopTracking);
 			document.removeEventListener('mouseup', onUp);
+			document.removeEventListener('mouseout', onUp);
 			document.removeEventListener('mousemove', onMove);
 		}
 		
