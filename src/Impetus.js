@@ -24,8 +24,8 @@ export default class Impetus {
 		var paused = false;
 		var decelerating = false;
 		var trackingPoints = [];
-		
-		
+
+
 		/**
 		 * Initialize instance
 		 */
@@ -34,11 +34,11 @@ export default class Impetus {
 			if (!sourceEl) {
 				throw new Error('IMPETUS: source not found.');
 			}
-			
+
 			if (!updateCallback) {
 				throw new Error('IMPETUS: update function not defined.');
 			}
-			
+
 			if (initialValues) {
 				if (initialValues[0]) {
 					targetX = initialValues[0];
@@ -48,7 +48,7 @@ export default class Impetus {
 				}
 				callUpdateCallback();
 			}
-			
+
 			// Initialize bound values
 			if (boundX) {
 				boundXmin = boundX[0];
@@ -58,13 +58,13 @@ export default class Impetus {
 				boundYmin = boundY[0];
 				boundYmax = boundY[1];
 			}
-			
+
 			sourceEl.addEventListener('touchstart', onDown);
 			sourceEl.addEventListener('mousedown', onDown);
 		})();
-		
-		
-		
+
+
+
 		/**
 		 * Disable movement processing
 		 * @public
@@ -73,7 +73,7 @@ export default class Impetus {
 			pointerActive = false;
 			paused = true;
 		};
-		
+
 		/**
 		 * Enable movement processing
 		 * @public
@@ -81,7 +81,7 @@ export default class Impetus {
 		this.resume = function() {
 			paused = false;
 		};
-		
+
 		/**
 		 * Update the current x and y values
 		 * @public
@@ -96,7 +96,7 @@ export default class Impetus {
 				targetY = y;
 			}
 		};
-		
+
 		/**
 		 * Update the multiplier value
 		 * @public
@@ -106,14 +106,14 @@ export default class Impetus {
 			multiplier = val;
 			stopThreshold = stopThresholdDefault * multiplier;
 		};
-		
+
 		/**
 		 * Executes the update function
 		 */
 		function callUpdateCallback() {
 			updateCallback.call(sourceEl, targetX, targetY);
 		}
-		
+
 		/**
 		 * Creates a custom normalized event object from touch and mouse events
 		 * @param  {Event} ev
@@ -135,7 +135,7 @@ export default class Impetus {
 				};
 			}
 		}
-		
+
 		/**
 		 * Initializes movement tracking
 		 * @param  {Object} ev Normalized event
@@ -146,12 +146,12 @@ export default class Impetus {
 				pointerActive = true;
 				decelerating = false;
 				pointerId = event.id;
-				
+
 				pointerLastX = pointerCurrentX = event.x;
 				pointerLastY = pointerCurrentY = event.y;
 				trackingPoints = [];
 				addTrackingPoint(pointerLastX, pointerLastY);
-				
+
 				document.addEventListener('touchmove', onMove);
 				document.addEventListener('touchend', onUp);
 				document.addEventListener('touchcancel', stopTracking);
@@ -159,7 +159,7 @@ export default class Impetus {
 				document.addEventListener('mouseup', onUp);
 			}
 		}
-		
+
 		/**
 		 * Handles move events
 		 * @param  {Object} ev Normalized event
@@ -167,7 +167,7 @@ export default class Impetus {
 		function onMove(ev) {
 			ev.preventDefault();
 			var event = normalizeEvent(ev);
-			
+
 			if (pointerActive && event.id === pointerId) {
 				pointerCurrentX = event.x;
 				pointerCurrentY = event.y;
@@ -175,19 +175,19 @@ export default class Impetus {
 				requestTick();
 			}
 		}
-		
+
 		/**
 		 * Handles up/end events
 		 * @param {Object} ev Normalized event
 		 */
 		function onUp(ev) {
 			var event = normalizeEvent(ev);
-			
+
 			if (pointerActive && event.id === pointerId) {
 				stopTracking();
 			}
 		}
-		
+
 		/**
 		 * Stops movement tracking, starts animation
 		 */
@@ -195,14 +195,14 @@ export default class Impetus {
 			pointerActive = false;
 			addTrackingPoint(pointerLastX, pointerLastY);
 			startDecelAnim();
-			
+
 			document.removeEventListener('touchmove', onMove);
 			document.removeEventListener('touchend', onUp);
 			document.removeEventListener('touchcancel', stopTracking);
 			document.removeEventListener('mouseup', onUp);
 			document.removeEventListener('mousemove', onMove);
 		}
-		
+
 		/**
 		 * Records movement for the last 100ms
 		 * @param {number} x
@@ -216,20 +216,20 @@ export default class Impetus {
 				}
 				trackingPoints.shift();
 			}
-			
+
 			trackingPoints.push({x, y, time});
 		}
-		
+
 		/**
 		 * Calculate new values, call update function
 		 */
 		function updateAndRender() {
 			var pointerChangeX = pointerCurrentX - pointerLastX;
 			var pointerChangeY = pointerCurrentY - pointerLastY;
-			
+
 			targetX += pointerChangeX * multiplier;
 			targetY += pointerChangeY * multiplier;
-			
+
 			if (bounce) {
 				let diff = checkBounds();
 				if (diff.x !== 0) {
@@ -241,15 +241,15 @@ export default class Impetus {
 			} else {
 				checkBounds(true);
 			}
-			
+
 			callUpdateCallback();
-			
+
 			pointerLastX = pointerCurrentX;
 			pointerLastY = pointerCurrentY;
 			ticking = false;
 		}
-		
-		
+
+
 		/**
 		 * Returns a value from around 0.5 to 1, based on distance
 		 * @param {Number} val
@@ -257,8 +257,8 @@ export default class Impetus {
 		function dragOutOfBoundsMultiplier(val) {
 			return 0.000005 * Math.pow(val, 2) + 0.0001 * val + 0.55;
 		}
-		
-		
+
+
 		/**
 		 * prevents animating faster than current framerate
 		 */
@@ -268,8 +268,8 @@ export default class Impetus {
 			}
 			ticking = true;
 		}
-		
-		
+
+
 		/**
 		 * Determine position relative to bounds
 		 * @param {Boolean} restrict Whether to restrict target to bounds
@@ -277,19 +277,19 @@ export default class Impetus {
 		function checkBounds(restrict) {
 			var xDiff = 0;
 			var yDiff = 0;
-			
+
 			if (boundXmin !== undefined && targetX < boundXmin) {
 				xDiff = boundXmin - targetX;
 			} else if (boundXmax !== undefined && targetX > boundXmax) {
 				xDiff = boundXmax - targetX;
 			}
-			
+
 			if (boundYmin !== undefined && targetY < boundYmin) {
 				yDiff = boundYmin - targetY;
 			} else if (boundYmax !== undefined && targetY > boundYmax) {
 				yDiff = boundYmax - targetY;
 			}
-			
+
 			if (restrict) {
 				if (xDiff !== 0) {
 					targetX = (xDiff > 0) ? boundXmin : boundXmax;
@@ -298,40 +298,44 @@ export default class Impetus {
 					targetY = (yDiff > 0) ? boundYmin : boundYmax;
 				}
 			}
-			
+
 			return {
 				x: xDiff,
 				y: yDiff,
 				inBounds: xDiff === 0 && yDiff === 0
 			};
 		}
-		
-		
+
+
 		/**
 		 * Initialize animation of values coming to a stop
 		 */
 		function startDecelAnim() {
 			var firstPoint = trackingPoints[0];
 			var lastPoint = trackingPoints[trackingPoints.length - 1];
-			
+
 			var xOffset = lastPoint.x - firstPoint.x;
 			var yOffset = lastPoint.y - firstPoint.y;
 			var timeOffset = lastPoint.time - firstPoint.time;
-			
+
 			var D = (timeOffset / 15) / multiplier;
-			
+
 			decVelX = (xOffset / D) || 0; // prevent NaN
 			decVelY = (yOffset / D) || 0;
-			
+
 			var diff = checkBounds();
-			
+
 			if ((Math.abs(decVelX) > 1 || Math.abs(decVelY) > 1) || !diff.inBounds){
 				decelerating = true;
 				requestAnimFrame(stepDecelAnim);
+			} else {
+				// Emit `momentumend` event when user stops dragging and no acceleration
+				// is needed
+				sourceEl.dispatchEvent(new Event('momentumend'));
 			}
 		}
-		
-		
+
+
 		/**
 		 * Animates values slowing down
 		 */
@@ -339,20 +343,20 @@ export default class Impetus {
 			if (!decelerating) {
 				return;
 			}
-			
+
 			decVelX *= friction;
 			decVelY *= friction;
-			
+
 			targetX += decVelX;
 			targetY += decVelY;
-			
+
 			var diff = checkBounds();
-			
+
 			if ((Math.abs(decVelX) > stopThreshold || Math.abs(decVelY) > stopThreshold) || !diff.inBounds) {
-				
+
 				if (bounce) {
 					let reboundAdjust = 2.5;
-					
+
 					if (diff.x !== 0) {
 						if (diff.x * decVelX <= 0) {
 							decVelX += diff.x * bounceDeceleration;
@@ -387,12 +391,14 @@ export default class Impetus {
 						decVelY = 0;
 					}
 				}
-				
+
 				callUpdateCallback();
-				
+
 				requestAnimFrame(stepDecelAnim);
 			} else {
 				decelerating = false;
+				// Emit `momentumend` event when deceleration is complete
+				sourceEl.dispatchEvent(new Event('momentumend'));
 			}
 		}
 	}
