@@ -1,6 +1,5 @@
 {
-    "name": "Chris Bateman",
-    "version": "0.8.1",
+    "name": "impetus",
     "homepage": "https://github.com/chrisbateman/impetus",
     "description": "Add momentum to anything. It's like iScroll, except not for scrolling. Supports mouse and touch events.",
     "authors": [
