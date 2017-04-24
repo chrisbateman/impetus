@@ -16,7 +16,7 @@ var myImpetus = new Impetus({
     }
 });
 ```
-You give it an area to listen to for touch or mouse events, and it gives you the x and y values with some momentum.
+You give it an area to listen to for touch or mouse events, and it gives you the `x` and `y` values with some momentum.
 
 Impetus will register itself as an AMD module if it's available.
 
@@ -33,52 +33,52 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row" align="left">source (required)</th>
-			<td>HTMLElement|String</td>
+			<th scope="row" align="left"><code>source</code> (required)</th>
+			<td><code>HTMLElement</code>|<code>String</code></td>
 			<td>-</td>
 			<td>Element reference or query string for the target on which to listen for movement.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">update (required)</th>
-			<td>function(x, y)</td>
+			<th scope="row" align="left"><code>update</code> (required)</th>
+			<td><code>function(x, y)</code></td>
 			<td>-</td>
-			<td>This function will be called with the updated x and y values.</td>
+			<td>This function will be called with the updated <var>x</var> and <var>y</var> values.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">multiplier</th>
-			<td>Number</td>
-			<td>1</td>
-			<td>The relationship between the input and output values</td>
+			<th scope="row" align="left"><code>multiplier</code></th>
+			<td><code>Number</code></td>
+			<td><code>1</code></td>
+			<td>The relationship between the input and output values.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">friction</th>
-			<td>Number</td>
-			<td>0.92</td>
-			<td>Rate at which values slow down after you let go</td>
+			<th scope="row" align="left"><code>friction</code></th>
+			<td><code>Number</code></td>
+			<td><code>0.92</code></td>
+			<td>Rate at which values slow down after you let go.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">initialValues</th>
-			<td>Number[2]</td>
-			<td>[0, 0]</td>
-			<td>Array of initial x and y values</td>
+			<th scope="row" align="left"><code>initialValues</code></th>
+			<td><code>[Number, Number]</code></td>
+			<td><code>[0, 0]</code></td>
+			<td>Array of initial <var>x</var> and <var>y</var> values.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">boundX</th>
-			<td>Number[2]</td>
+			<th scope="row" align="left"><code>boundX</code></th>
+			<td><code>[Number, Number]</code></td>
 			<td>-</td>
-			<td>Array of low and high values. X values will remain within these bounds</td>
+			<td>Array of low and high values. <var>x</var>-values will remain within these bounds.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">boundY</th>
-			<td>Number[2]</td>
+			<th scope="row" align="left"><code>boundY</code></th>
+			<td><code>[Number, Number]</code></td>
 			<td>-</td>
-			<td>Array of low and high values. X values will remain within these bounds</td>
+			<td>Array of low and high values. <var>y</var>-values will remain within these bounds.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">bounce</th>
-			<td>Boolean</td>
-			<td>true</td>
-			<td>Whether to stretch and rebound values when pulled outside the bounds</td>
+			<th scope="row" align="left"><code>bounce</code></th>
+			<td><code>Boolean</code></td>
+			<td><code>true</code></td>
+			<td>Whether to stretch and rebound values when pulled outside the bounds.</td>
 		</tr>
 	</tbody>
 </table>
@@ -94,25 +94,25 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row" align="left">.pause()</th>
-			<td>Disable movement processing</td>
+			<th scope="row" align="left"><code>.pause()</code></th>
+			<td>Disable movement processing.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">.resume()</th>
-			<td>Re-enable movement processing</td>
+			<th scope="row" align="left"><code>.resume()</code></th>
+			<td>Re-enable movement processing.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">.setMultiplier( &lt;number&gt; )</th>
-			<td>Adjust the multiplier in flight</td>
+			<th scope="row" align="left"><code>.setMultiplier( &lt;number&gt; )</code></th>
+			<td>Adjust the <var>multiplier</var> in flight.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left">.setValues( &lt;number&gt; , &lt;number&gt; )</th>
-			<td>Adjust the current x and y output values</td>
+			<th scope="row" align="left"><code>.setValues( &lt;number&gt; , &lt;number&gt; )</code></th>
+			<td>Adjust the current <var>x</var> and <var>y</var> output values.</td>
 		</tr>
 	</tbody>
 </table>
 
 
 ### Browser Support ###
-Chrome, Firefox, Safari, Opera, IE 9+, iOS, Android. Support for IE 8 can be achieved by adding a polyfill for addEventListener.
+Chrome, Firefox, Safari, Opera, IE 9+, iOS, Android. Support for IE 8 can be achieved by adding a polyfill for `addEventListener`.
 
