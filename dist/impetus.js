@@ -19,6 +19,10 @@
 	var bounceDeceleration = 0.04;
 	var bounceAcceleration = 0.11;
 
+	// fixes weird safari 10 bug where preventDefault is prevented
+	// @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
+	window.addEventListener('touchmove', function () {});
+
 	var Impetus = function Impetus(_ref) {
 		var _ref$source = _ref.source;
 		var sourceEl = _ref$source === undefined ? document : _ref$source;
