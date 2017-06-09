@@ -33,9 +33,9 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row" align="left">source (required)</th>
+			<th scope="row" align="left">source</th>
 			<td>HTMLElement|String</td>
-			<td>-</td>
+			<td>document</td>
 			<td>Element reference or query string for the target on which to listen for movement.</td>
 		</tr>
 		<tr>
@@ -110,12 +110,18 @@ Impetus will register itself as an AMD module if it's available.
 			<td>Adjust the current x and y output values</td>
 		</tr>
 		<tr>
+			<th scope="row" align="left">.setBoundX( &lt;number[2]&gt; )</th>
+			<td>Adjust the BoundX</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left">.setBoundY( &lt;number[2]&gt; )</th>
+			<td>Adjust the BoundY</td>
+		</tr>
+		<tr>
 			<th scope="row" align="left">.destroy()</th>
 			<td>
-			For edge cases where you may need to
-			reinstanciate Impetus on the same sourceEl
-			this will remove the previous event listeners.
-			<br/> returns null so you can use it to destroy reference if you wish, ie. `instance = instance.destroy()`
+				For edge cases where you may need to reinstantiate Impetus on the same sourceEl this will remove the previous event listeners.
+				<br/>Returns null so you can use it to destroy reference if you wish, i.e. `instance = instance.destroy()`
 			</td>
 		</tr>
 	</tbody>

@@ -140,6 +140,26 @@
 		};
 
 		/**
+   * Update boundX value
+   * @public
+   * @param {Number[]} boundX
+   */
+		this.setBoundX = function (boundX) {
+			boundXmin = boundX[0];
+			boundXmax = boundX[1];
+		};
+
+		/**
+   * Update boundY value
+   * @public
+   * @param {Number[]} boundY
+   */
+		this.setBoundY = function (boundY) {
+			boundYmin = boundY[0];
+			boundYmax = boundY[1];
+		};
+
+		/**
    * Executes the update function
    */
 		function callUpdateCallback() {
@@ -190,6 +210,7 @@
 				document.addEventListener('touchcancel', stopTracking);
 				document.addEventListener('mousemove', onMove);
 				document.addEventListener('mouseup', onUp);
+				document.addEventListener('mouseout', onUp);
 			}
 		}
 
@@ -233,6 +254,7 @@
 			document.removeEventListener('touchend', onUp);
 			document.removeEventListener('touchcancel', stopTracking);
 			document.removeEventListener('mouseup', onUp);
+			document.removeEventListener('mouseout', onUp);
 			document.removeEventListener('mousemove', onMove);
 		}
 
