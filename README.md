@@ -117,6 +117,13 @@ Impetus will register itself as an AMD module if it's available.
 			<th scope="row" align="left">.setBoundY( &lt;number[2]&gt; )</th>
 			<td>Adjust the BoundY</td>
 		</tr>
+		<tr>
+			<th scope="row" align="left">.destroy()</th>
+			<td>
+				For edge cases where you may need to reinstantiate Impetus on the same sourceEl this will remove the previous event listeners.
+				<br/>Returns null so you can use it to destroy reference if you wish, i.e. `instance = instance.destroy()`
+			</td>
+		</tr>
 	</tbody>
 </table>
 
