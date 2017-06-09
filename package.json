@@ -7,7 +7,8 @@
   "scripts": {
     "prebuild": "rm -rf dist && mkdir dist",
     "build": "babel src/Impetus.js --modules umd -o dist/impetus.js && uglifyjs dist/impetus.js --comments -cmo dist/impetus.min.js",
-    "version": "npm run build && git add dist -f"
+    "postbuild": "cp dist/impetus.min.js docs",
+    "version": "npm run build && git add dist docs -f"
   },
   "keywords": [
     "momentum",
