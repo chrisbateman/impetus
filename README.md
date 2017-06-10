@@ -33,9 +33,9 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row" align="left"><code>source</code> (required)</th>
+			<th scope="row" align="left"><code>source</code></th>
 			<td><code>HTMLElement</code>|<code>String</code></td>
-			<td>-</td>
+			<td>document</td>
 			<td>Element reference or query string for the target on which to listen for movement.</td>
 		</tr>
 		<tr>
@@ -108,6 +108,20 @@ Impetus will register itself as an AMD module if it's available.
 		<tr>
 			<th scope="row" align="left"><code>.setValues( &lt;number&gt; , &lt;number&gt; )</code></th>
 			<td>Adjust the current <var>x</var> and <var>y</var> output values.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.setBoundX( &lt;number[2]&gt; )</code></th>
+			<td>Adjust the X bound</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.setBoundY( &lt;number[2]&gt; )</code></th>
+			<td>Adjust the Y bound</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.destroy()</code></th>
+			<td>
+				This will remove the previous event listeners. Returns null so you can use it to destroy your variable if you wish, i.e. <code>instance = instance.destroy()</code>
+			</td>
 		</tr>
 	</tbody>
 </table>

@@ -19,6 +19,10 @@
 	var bounceDeceleration = 0.04;
 	var bounceAcceleration = 0.11;
 
+	// fixes weird safari 10 bug where preventDefault is prevented
+	// @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
+	window.addEventListener('touchmove', function () {});
+
 	var Impetus = function Impetus(_ref) {
 		var _ref$source = _ref.source;
 		var sourceEl = _ref$source === undefined ? document : _ref$source;
@@ -83,6 +87,21 @@
 		})();
 
 		/**
+   * In edge cases where you may need to
+   * reinstanciate Impetus on the same sourceEl
+   * this will remove the previous event listeners
+   */
+		this.destroy = function () {
+			sourceEl.removeEventListener('touchstart', onDown);
+			sourceEl.removeEventListener('mousedown', onDown);
+			// however it won't "destroy" a reference
+			// to instance if you'd like to do that
+			// it returns null as a convinience.
+			// ex: `instance = instance.destroy();`
+			return null;
+		};
+
+		/**
    * Disable movement processing
    * @public
    */
@@ -122,6 +141,26 @@
 		this.setMultiplier = function (val) {
 			multiplier = val;
 			stopThreshold = stopThresholdDefault * multiplier;
+		};
+
+		/**
+   * Update boundX value
+   * @public
+   * @param {Number[]} boundX
+   */
+		this.setBoundX = function (boundX) {
+			boundXmin = boundX[0];
+			boundXmax = boundX[1];
+		};
+
+		/**
+   * Update boundY value
+   * @public
+   * @param {Number[]} boundY
+   */
+		this.setBoundY = function (boundY) {
+			boundYmin = boundY[0];
+			boundYmax = boundY[1];
 		};
 
 		/**
@@ -175,6 +214,7 @@
 				document.addEventListener('touchcancel', stopTracking);
 				document.addEventListener('mousemove', onMove);
 				document.addEventListener('mouseup', onUp);
+				document.addEventListener('mouseout', onUp);
 			}
 		}
 
@@ -218,6 +258,7 @@
 			document.removeEventListener('touchend', onUp);
 			document.removeEventListener('touchcancel', stopTracking);
 			document.removeEventListener('mouseup', onUp);
+			document.removeEventListener('mouseout', onUp);
 			document.removeEventListener('mousemove', onMove);
 		}
 

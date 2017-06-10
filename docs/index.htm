@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Impetus.js - Add Momentum to Anything</title>
+	<meta name="keywords" content="JavaScript, JS, Momentum" />
+	<link href='//fonts.googleapis.com/css?family=Raleway:100' rel='stylesheet' type='text/css'>
+	<style>
+	html {
+		height: 100%;
+		-webkit-text-size-adjust:none;
+		-webkit-font-smoothing: antialiased;
+		background-color: #333;
+		color: #EEE;
+		font: 100%/1.4 sans-serif;
+	}
+	body {
+		margin: 0;
+	}
+	.container {
+		margin: 0 auto;
+		max-width: 800px;
+		padding: 0 3%;
+	}
+	a {
+		color: #AAA;
+	}
+	.button {
+		display: inline-block;
+		*display: inline; /* IE 7 */
+		line-height: normal;
+		white-space: nowrap;
+		vertical-align: baseline;
+		text-align: center;
+		font-size: 100%;
+		*font-size: 90%; /*IE 6/7 */
+		*overflow: visible; /*IE 6/7 */
+		padding: 0.5em 1.2em 0.5em;
+		color: #444;
+		border: 0 none;
+		border: none rgba(0, 0, 0, 0);  /*IE9 + everything else*/
+		background-color: #E6E6E6;
+		text-decoration: none;
+		border-radius: 2px;
+	}
+	.button:hover,
+	.button:focus {
+		background-color: #D6D6D6;
+	}
+	
+	header {
+		padding: 2em 0;
+		text-align: center;
+	}
+	header h1 {
+		font-family: Raleway;
+		font-weight: 100;
+		font-size: 5em;
+		margin: 0 0 0.3em;
+	}
+	@media (max-width: 400px) {
+		header h1 {
+			font-size: 4em;
+		}
+	}
+	
+	header p {
+		margin-bottom: 2em;
+	}
+	header .button:last-child {
+		margin-left: 0.5em;
+	}
+	
+	.demo-area {
+		position: relative;
+		padding: 3em 0;
+		height: 235px;
+		background-color: #999;
+		-webkit-user-select: none;
+		   -moz-user-select: none;
+			-ms-user-select: none;
+				user-select: none;
+	}
+	.dot {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 50px;
+		height: 50px;
+		/*margin: -25px 0 0 -25px;*/
+		border-radius: 50px;
+		background-color: #FFF;
+		border: 2px solid #222;
+		z-index: 1;
+	}
+	.demo-perspective {
+	    height: 100%;
+	    position: relative;
+		-webkit-perspective: 400px;
+				perspective: 400px;
+	}
+	.cube {
+		-webkit-transform: translateZ(-120px);
+				transform: translateZ(-120px);
+		-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+		position: absolute;
+		width: 150px;
+		height: 150px;
+		margin: -20px 0 0 -75px;
+		top: 110px;
+		left: 50%;
+	}
+	.cube > div {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background-color: #AAA;
+		background-color: #F8F8F8;
+		box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.3);
+		border: 1px solid #111;
+		opacity: 0.4;
+	}
+	.cube-front {
+		-webkit-transform: translateZ(75px);
+				transform: translateZ(75px);
+	}
+	.cube-back {
+		-webkit-transform: rotateX(-180deg) translateZ(75px);
+				transform: rotateX(-180deg) translateZ(75px);
+	}
+	.cube-top {
+		-webkit-transform: rotateX(90deg) translateZ(75px);
+				transform: rotateX(90deg) translateZ(75px);
+	}
+	.cube-bottom {
+		-webkit-transform: rotateX(-90deg) translateZ(75px);
+				transform: rotateX(-90deg) translateZ(75px);
+	}
+	.cube-left {
+		-webkit-transform: rotateY(-90deg) translateZ(75px);
+				transform: rotateY(-90deg) translateZ(75px);
+	}
+	.cube-right {
+		-webkit-transform: rotateY(90deg) translateZ(75px);
+				transform: rotateY(90deg) translateZ(75px);
+	}
+	
+	pre {
+		background: #444;
+		border: 1px solid #222;
+		padding: 1em 1.5em;
+		overflow-x: auto;
+	}
+	footer {
+		margin-top: 3em;
+		padding: 1em 0;
+	}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="container">
+			<h1>Impetus.js</h1>
+			<p>Add momentum to anything. It's like iScroll, except not for scrolling. Supports mouse and touch events. Less than 1.5KB gzipped.</p>
+			<div>
+				<a class="button" href="https://github.com/chrisbateman/impetus">View on GitHub</a>
+				<a class="button" href="https://raw.github.com/chrisbateman/impetus/master/impetus.min.js">Download</a>
+			</div>
+		</div>
+	</header>
+	<div class="demo-area">
+		<div id="Dot" class="dot"></div>
+		<div class="demo-perspective">
+		    <div id="Cube" class="cube"><div class="cube-front"></div><div class="cube-back"></div><div class="cube-top"></div><div class="cube-bottom"></div><div class="cube-left"></div><div class="cube-right"></div></div>
+		</div>
+	</div>
+	<div class="info-area">
+		<div class="container">
+		    <p>Impetus is meant to be used as a part of other components &mdash; these simple demos just demonstrate the momentum. For an example of a practical implementation, take a look at <a href="http://chrisbateman.github.io/spherical/">Spherical.js</a>.</p>
+	        <h2>Usage</h2>
+			<pre><code>new Impetus({
+    source: myNode,
+    update: function(x, y) {
+        // whatever you want to do with the values
+    }
+});</code></pre>
+			<p>For more usage details, see the <a href="https://github.com/chrisbateman/impetus">API</a> on GitHub.</p>
+		</div>
+	</div>
+	
+	<footer>
+		<div class="container">
+			<small>Created by <a href="https://twitter.com/batemanchris">@batemanchris</a>.</small>
+		</div>
+	</footer>
+	
+	<script src="impetus.min.js"></script>
+	<script>
+	var dotEl = document.getElementById('Dot');
+	var dotParent = dotEl.offsetParent;
+	
+	var dotImpetus = new Impetus({
+		source: dotEl,
+		initialValues: [dotParent.offsetWidth/2 - 25, 45],
+		boundX: [0, dotParent.offsetWidth - dotEl.offsetWidth],
+		boundY: [0, dotParent.offsetHeight - dotEl.offsetHeight],
+		update: function(x, y) {
+			this.style.left = x + 'px';
+			this.style.top = y + 'px';
+		}
+	});
+	
+	new Impetus({
+		source: '#Cube',
+		multiplier: 0.7,
+		update: function(x, y) {
+			this.style.transform = this.style.webkitTransform = 'translateZ(-120px) rotateY('+x+'deg) rotateX('+(-y)+'deg)';
+		}
+	});
+	</script>
+
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-25267401-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+</body>
+</html>
