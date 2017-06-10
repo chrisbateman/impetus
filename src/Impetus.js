@@ -190,10 +190,11 @@ export default class Impetus {
                 trackingPoints = [];
                 addTrackingPoint(pointerLastX, pointerLastY);
 
-                document.addEventListener('touchmove', onMove);
+                // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention
+                document.addEventListener('touchmove', onMove, getPassiveSupported() ? {passive: false} : false);
                 document.addEventListener('touchend', onUp);
                 document.addEventListener('touchcancel', stopTracking);
-                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mousemove', onMove, getPassiveSupported() ? {passive: false} : false);
                 document.addEventListener('mouseup', onUp);
             }
         }
@@ -446,3 +447,21 @@ const requestAnimFrame = (function(){
         window.setTimeout(callback, 1000 / 60);
     };
 })();
+
+
+function getPassiveSupported() {
+    let passiveSupported = false;
+
+    try {
+        var options = Object.defineProperty({}, "passive", {
+            get: function() {
+                passiveSupported = true;
+            }
+        });
+
+        window.addEventListener("test", null, options);
+    } catch(err) {}
+
+    getPassiveSupported = () => passiveSupported;
+    return passiveSupported;
+}
