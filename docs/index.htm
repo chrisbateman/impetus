@@ -48,7 +48,7 @@
 	.button:focus {
 		background-color: #D6D6D6;
 	}
-	
+
 	header {
 		padding: 2em 0;
 		text-align: center;
@@ -64,14 +64,14 @@
 			font-size: 4em;
 		}
 	}
-	
+
 	header p {
 		margin-bottom: 2em;
 	}
 	header .button:last-child {
 		margin-left: 0.5em;
 	}
-	
+
 	.demo-area {
 		position: relative;
 		padding: 3em 0;
@@ -146,7 +146,7 @@
 		-webkit-transform: rotateY(90deg) translateZ(75px);
 				transform: rotateY(90deg) translateZ(75px);
 	}
-	
+
 	pre {
 		background: #444;
 		border: 1px solid #222;
@@ -166,7 +166,7 @@
 			<p>Add momentum to anything. It's like iScroll, except not for scrolling. Supports mouse and touch events. Less than 1.5KB gzipped.</p>
 			<div>
 				<a class="button" href="https://github.com/chrisbateman/impetus">View on GitHub</a>
-				<a class="button" href="https://raw.github.com/chrisbateman/impetus/master/impetus.min.js">Download</a>
+				<a class="button" href="https://unpkg.com/impetus/dist/impetus.min.js">Download</a>
 			</div>
 		</div>
 	</header>
@@ -189,18 +189,18 @@
 			<p>For more usage details, see the <a href="https://github.com/chrisbateman/impetus">API</a> on GitHub.</p>
 		</div>
 	</div>
-	
+
 	<footer>
 		<div class="container">
 			<small>Created by <a href="https://twitter.com/batemanchris">@batemanchris</a>.</small>
 		</div>
 	</footer>
-	
+
 	<script src="impetus.min.js"></script>
 	<script>
 	var dotEl = document.getElementById('Dot');
 	var dotParent = dotEl.offsetParent;
-	
+
 	var dotImpetus = new Impetus({
 		source: dotEl,
 		initialValues: [dotParent.offsetWidth/2 - 25, 45],
@@ -211,7 +211,7 @@
 			this.style.top = y + 'px';
 		}
 	});
-	
+
 	new Impetus({
 		source: '#Cube',
 		multiplier: 0.7,
