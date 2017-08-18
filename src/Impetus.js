@@ -74,6 +74,7 @@ export default class Impetus {
          * this will remove the previous event listeners
          */
         this.destroy = function() {
+            decelerating = false;// stop stray animations
             sourceEl.removeEventListener('touchstart', onDown);
             sourceEl.removeEventListener('mousedown', onDown);
             // however it won't "destroy" a reference
