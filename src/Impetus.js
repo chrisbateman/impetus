@@ -3,15 +3,10 @@ const stopThresholdDefault = 0.3;
 const bounceDeceleration = 0.04;
 const bounceAcceleration = 0.11;
 
-
-// fixes weird safari 10 bug where preventDefault is prevented
-// @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
-window.addEventListener('touchmove', function() {});
-
-
 export default class Impetus {
     constructor({
-        source: sourceEl = document,
+        window: win = window,
+        source: sourceEl = window,
         update: updateCallback,
         multiplier = 1,
         friction = 0.92,
@@ -30,12 +25,16 @@ export default class Impetus {
         var decelerating = false;
         var trackingPoints = [];
 
+        // fixes weird safari 10 bug where preventDefault is prevented
+        // @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
+        win.addEventListener('touchmove', function() {});
+
 
         /**
          * Initialize instance
          */
         (function init() {
-            sourceEl = (typeof sourceEl === 'string') ? document.querySelector(sourceEl) : sourceEl;
+            sourceEl = (typeof sourceEl === 'string') ? win.document.querySelector(sourceEl) : sourceEl;
             if (!sourceEl) {
                 throw new Error('IMPETUS: source not found.');
             }
@@ -191,11 +190,11 @@ export default class Impetus {
                 addTrackingPoint(pointerLastX, pointerLastY);
 
                 // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention
-                document.addEventListener('touchmove', onMove, getPassiveSupported() ? {passive: false} : false);
-                document.addEventListener('touchend', onUp);
-                document.addEventListener('touchcancel', stopTracking);
-                document.addEventListener('mousemove', onMove, getPassiveSupported() ? {passive: false} : false);
-                document.addEventListener('mouseup', onUp);
+                win.addEventListener('touchmove', onMove, getPassiveSupported() ? {passive: false} : false);
+                win.addEventListener('touchend', onUp);
+                win.addEventListener('touchcancel', stopTracking);
+                win.addEventListener('mousemove', onMove, getPassiveSupported() ? {passive: false} : false);
+                win.addEventListener('mouseup', onUp);
             }
         }
 
@@ -235,11 +234,11 @@ export default class Impetus {
             addTrackingPoint(pointerLastX, pointerLastY);
             startDecelAnim();
 
-            document.removeEventListener('touchmove', onMove);
-            document.removeEventListener('touchend', onUp);
-            document.removeEventListener('touchcancel', stopTracking);
-            document.removeEventListener('mouseup', onUp);
-            document.removeEventListener('mousemove', onMove);
+            win.removeEventListener('touchmove', onMove);
+            win.removeEventListener('touchend', onUp);
+            win.removeEventListener('touchcancel', stopTracking);
+            win.removeEventListener('mouseup', onUp);
+            win.removeEventListener('mousemove', onMove);
         }
 
         /**
