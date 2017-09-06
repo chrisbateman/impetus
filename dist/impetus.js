@@ -19,13 +19,11 @@
     var bounceDeceleration = 0.04;
     var bounceAcceleration = 0.11;
 
-    // fixes weird safari 10 bug where preventDefault is prevented
-    // @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
-    window.addEventListener('touchmove', function () {});
-
     var Impetus = function Impetus(_ref) {
+        var _ref$window = _ref.window;
+        var win = _ref$window === undefined ? window : _ref$window;
         var _ref$source = _ref.source;
-        var sourceEl = _ref$source === undefined ? document : _ref$source;
+        var sourceEl = _ref$source === undefined ? window : _ref$source;
         var updateCallback = _ref.update;
         var _ref$multiplier = _ref.multiplier;
         var multiplier = _ref$multiplier === undefined ? 1 : _ref$multiplier;
@@ -49,11 +47,15 @@
         var decelerating = false;
         var trackingPoints = [];
 
+        // fixes weird safari 10 bug where preventDefault is prevented
+        // @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
+        win.addEventListener('touchmove', function () {});
+
         /**
          * Initialize instance
          */
         (function init() {
-            sourceEl = typeof sourceEl === 'string' ? document.querySelector(sourceEl) : sourceEl;
+            sourceEl = typeof sourceEl === 'string' ? win.document.querySelector(sourceEl) : sourceEl;
             if (!sourceEl) {
                 throw new Error('IMPETUS: source not found.');
             }
@@ -210,11 +212,11 @@
                 addTrackingPoint(pointerLastX, pointerLastY);
 
                 // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention
-                document.addEventListener('touchmove', onMove, getPassiveSupported() ? { passive: false } : false);
-                document.addEventListener('touchend', onUp);
-                document.addEventListener('touchcancel', stopTracking);
-                document.addEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
-                document.addEventListener('mouseup', onUp);
+                win.addEventListener('touchmove', onMove, getPassiveSupported() ? { passive: false } : false);
+                win.addEventListener('touchend', onUp);
+                win.addEventListener('touchcancel', stopTracking);
+                win.addEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
+                win.addEventListener('mouseup', onUp);
             }
         }
 
@@ -254,11 +256,11 @@
             addTrackingPoint(pointerLastX, pointerLastY);
             startDecelAnim();
 
-            document.removeEventListener('touchmove', onMove);
-            document.removeEventListener('touchend', onUp);
-            document.removeEventListener('touchcancel', stopTracking);
-            document.removeEventListener('mouseup', onUp);
-            document.removeEventListener('mousemove', onMove);
+            win.removeEventListener('touchmove', onMove);
+            win.removeEventListener('touchend', onUp);
+            win.removeEventListener('touchcancel', stopTracking);
+            win.removeEventListener('mouseup', onUp);
+            win.removeEventListener('mousemove', onMove);
         }
 
         /**
