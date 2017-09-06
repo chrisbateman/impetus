@@ -45,6 +45,12 @@ Impetus will register itself as an AMD module if it's available.
 			<td>This function will be called with the updated <var>x</var> and <var>y</var> values.</td>
 		</tr>
 		<tr>
+			<th scope="row" align="left"><code>window</code></th>
+			<td><code>Window</code></td>
+			<td><code>window</code></td>
+			<td>The window this instance of Impetus will be bound to (useful when dealing with iframes).</td>
+		</tr>
+		<tr>
 			<th scope="row" align="left"><code>multiplier</code></th>
 			<td><code>Number</code></td>
 			<td><code>1</code></td>
