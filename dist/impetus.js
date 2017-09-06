@@ -26,6 +26,8 @@
     var Impetus = function Impetus(_ref) {
         var _ref$source = _ref.source;
         var sourceEl = _ref$source === undefined ? document : _ref$source;
+        var _ref$axis = _ref.axis;
+        var axis = _ref$axis === undefined ? false : _ref$axis;
         var updateCallback = _ref.update;
         var _ref$multiplier = _ref.multiplier;
         var multiplier = _ref$multiplier === undefined ? 1 : _ref$multiplier;
@@ -164,6 +166,16 @@
         };
 
         /**
+         * Set the axis that will be scrolled
+         * @public
+         * @param {String|Boolean} axis
+         */
+        this.setAxis = function (val) {
+            var lowerCaseVal = (val || '').toLowerCase();
+            axis = lowerCaseVal === 'x' ? 'x' : lowerCaseVal === 'y' ? 'y' : false;
+        };
+
+        /**
          * Executes the update function
          */
         function callUpdateCallback() {
@@ -204,8 +216,8 @@
                 decelerating = false;
                 pointerId = event.id;
 
-                pointerLastX = pointerCurrentX = event.x;
-                pointerLastY = pointerCurrentY = event.y;
+                pointerLastX = pointerCurrentX = axis !== 'y' ? event.x : pointerLastX;
+                pointerLastY = pointerCurrentY = axis !== 'x' ? event.y : pointerLastY;
                 trackingPoints = [];
                 addTrackingPoint(pointerLastX, pointerLastY);
 
@@ -227,8 +239,8 @@
             var event = normalizeEvent(ev);
 
             if (pointerActive && event.id === pointerId) {
-                pointerCurrentX = event.x;
-                pointerCurrentY = event.y;
+                pointerCurrentX = axis !== 'y' ? event.x : pointerCurrentX;
+                pointerCurrentY = axis !== 'x' ? event.y : pointerCurrentY;
                 addTrackingPoint(pointerLastX, pointerLastY);
                 requestTick();
             }
@@ -282,8 +294,8 @@
          * Calculate new values, call update function
          */
         function updateAndRender() {
-            var pointerChangeX = pointerCurrentX - pointerLastX;
-            var pointerChangeY = pointerCurrentY - pointerLastY;
+            var pointerChangeX = pointerCurrentX - pointerLastX || 0; // prevent NaN
+            var pointerChangeY = pointerCurrentY - pointerLastY || 0;
 
             targetX += pointerChangeX * multiplier;
             targetY += pointerChangeY * multiplier;
@@ -333,16 +345,20 @@
             var xDiff = 0;
             var yDiff = 0;
 
-            if (boundXmin !== undefined && targetX < boundXmin) {
-                xDiff = boundXmin - targetX;
-            } else if (boundXmax !== undefined && targetX > boundXmax) {
-                xDiff = boundXmax - targetX;
+            if (axis !== 'y') {
+                if (boundXmin !== undefined && targetX < boundXmin) {
+                    xDiff = boundXmin - targetX;
+                } else if (boundXmax !== undefined && targetX > boundXmax) {
+                    xDiff = boundXmax - targetX;
+                }
             }
 
-            if (boundYmin !== undefined && targetY < boundYmin) {
-                yDiff = boundYmin - targetY;
-            } else if (boundYmax !== undefined && targetY > boundYmax) {
-                yDiff = boundYmax - targetY;
+            if (axis !== 'x') {
+                if (boundYmin !== undefined && targetY < boundYmin) {
+                    yDiff = boundYmin - targetY;
+                } else if (boundYmax !== undefined && targetY > boundYmax) {
+                    yDiff = boundYmax - targetY;
+                }
             }
 
             if (restrict) {
