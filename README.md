@@ -80,6 +80,12 @@ Impetus will register itself as an AMD module if it's available.
 			<td><code>true</code></td>
 			<td>Whether to stretch and rebound values when pulled outside the bounds.</td>
 		</tr>
+		<tr>
+			<th scope="row" align="left"><code>axis</code></th>
+			<td><code>String|Boolean</code></td>
+			<td><code>false</code></td>
+			<td>Whether to lock scrolling to a given axis ("x" or "y"), or to not lock at all (false).</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -116,6 +122,10 @@ Impetus will register itself as an AMD module if it's available.
 		<tr>
 			<th scope="row" align="left"><code>.setBoundY( &lt;number[2]&gt; )</code></th>
 			<td>Adjust the Y bound</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.setAxis( &lt;number[2]&gt; )</code></th>
+			<td>Change the locked axis</td>
 		</tr>
 		<tr>
 			<th scope="row" align="left"><code>.destroy()</code></th>
