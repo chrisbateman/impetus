@@ -5,7 +5,7 @@ const bounceAcceleration = 0.11;
 
 export default class Impetus {
     constructor({
-        axis: axis = false,
+        axis: axis = true,
         window: win = window,
         source: sourceEl = window,
         update: updateCallback,
@@ -152,7 +152,7 @@ export default class Impetus {
          */
         this.setAxis = function(val) {
             const lowerCaseVal = (val || '').toLowerCase();
-            axis = lowerCaseVal === 'x' ? 'x' : (lowerCaseVal === 'y' ? 'y' : false);
+            axis = lowerCaseVal === 'x' ? 'x' : (lowerCaseVal === 'y' ? 'y' : !!val);
         };
 
         /**
@@ -195,8 +195,8 @@ export default class Impetus {
                 decelerating = false;
                 pointerId = event.id;
 
-                pointerLastX = pointerCurrentX = axis !== 'y' ? event.x : pointerLastX;
-                pointerLastY = pointerCurrentY = axis !== 'x' ? event.y : pointerLastY;
+                pointerLastX = pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerLastX;
+                pointerLastY = pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerLastY;
                 trackingPoints = [];
                 addTrackingPoint(pointerLastX, pointerLastY);
 
@@ -218,8 +218,8 @@ export default class Impetus {
             var event = normalizeEvent(ev);
 
             if (pointerActive && event.id === pointerId) {
-                pointerCurrentX = axis !== 'y' ? event.x : pointerCurrentX;
-                pointerCurrentY = axis !== 'x' ? event.y : pointerCurrentY;
+                pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerCurrentX;
+                pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerCurrentY;
                 addTrackingPoint(pointerLastX, pointerLastY);
                 requestTick();
             }
@@ -236,6 +236,15 @@ export default class Impetus {
                 stopTracking();
             }
         }
+
+
+        /**
+         * Check if the supplied axis is locked
+         */
+        function isAxisUnlocked(testVal) {
+            return axis === testVal || axis === true;
+        }
+
 
         /**
          * Stops movement tracking, starts animation
@@ -327,7 +336,7 @@ export default class Impetus {
             var xDiff = 0;
             var yDiff = 0;
 
-            if (axis !== 'y') {
+            if (isAxisUnlocked('x')) {
                 if (boundXmin !== undefined && targetX < boundXmin) {
                     xDiff = boundXmin - targetX;
                 } else if (boundXmax !== undefined && targetX > boundXmax) {
@@ -335,7 +344,7 @@ export default class Impetus {
                 }
             }
 
-            if (axis !== 'x') {
+            if (isAxisUnlocked('y')) {
                 if (boundYmin !== undefined && targetY < boundYmin) {
                     yDiff = boundYmin - targetY;
                 } else if (boundYmax !== undefined && targetY > boundYmax) {
