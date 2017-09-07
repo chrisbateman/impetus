@@ -84,7 +84,7 @@ Impetus will register itself as an AMD module if it's available.
 			<th scope="row" align="left"><code>axis</code></th>
 			<td><code>String|Boolean</code></td>
 			<td><code>false</code></td>
-			<td>Whether to lock scrolling to a given axis ("x" or "y"), or to not lock at all (false).</td>
+			<td>Whether to lock scrolling to a given axis ("x" or "y"), to unlock both (true), or to completely prevent scrolling (false).</td>
 		</tr>
 	</tbody>
 </table>
@@ -124,7 +124,7 @@ Impetus will register itself as an AMD module if it's available.
 			<td>Adjust the Y bound</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left"><code>.setAxis( &lt;number[2]&gt; )</code></th>
+			<th scope="row" align="left"><code>.setAxis( &lt;string|boolean&gt; )</code></th>
 			<td>Change the locked axis</td>
 		</tr>
 		<tr>
