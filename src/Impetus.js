@@ -115,6 +115,15 @@ export default class Impetus {
         };
 
         /**
+         * Retrieve the current x and y values
+         * @public
+         * @returns {Number[]} with the x and y values
+         */
+        this.getValues = function() {
+            return [targetX, targetY];
+        };
+
+        /**
          * Update the multiplier value
          * @public
          * @param {Number} val
@@ -122,6 +131,15 @@ export default class Impetus {
         this.setMultiplier = function(val) {
             multiplier = val;
             stopThreshold = stopThresholdDefault * multiplier;
+        };
+
+        /**
+         * Retrieve the multiplier value
+         * @public
+         * @returns {Number} the multiplier value
+         */
+        this.getMultiplier = function() {
+            return multiplier;
         };
 
         /**
@@ -135,6 +153,15 @@ export default class Impetus {
         };
 
         /**
+         * Retrieve boundX value
+         * @public
+         * @returns {Number[]} boundX
+         */
+        this.getBoundX = function() {
+            return [boundXmin, boundXmax];
+        };
+
+        /**
          * Update boundY value
          * @public
          * @param {Number[]} boundY
@@ -142,6 +169,15 @@ export default class Impetus {
         this.setBoundY = function(boundY) {
             boundYmin = boundY[0];
             boundYmax = boundY[1];
+        };
+
+        /**
+         * Retrieve boundY value
+         * @public
+         * @returns {Number[]} boundY
+         */
+        this.getBoundY = function() {
+            return [boundYmin, boundYmax];
         };
 
         /**
