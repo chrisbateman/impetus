@@ -152,8 +152,17 @@ export default class Impetus {
          * @param {String|Boolean} axis
          */
         this.setAxis = function(val) {
-            const lowerCaseVal = (val || '').toLowerCase();
-            axis = lowerCaseVal === 'x' ? 'x' : (lowerCaseVal === 'y' ? 'y' : !!val);
+            val = typeof val === 'string' ? val.toLowerCase() : val;
+            axis = val === 'x' ? 'x' : (val === 'y' ? 'y' : !!val);
+        };
+
+        /**
+         * Retrieve the current axis value
+         * @public
+         * @returns {String|Boolean} axis
+         */
+        this.getAxis = function() {
+            return axis || false;
         };
 
         /**
