@@ -192,6 +192,15 @@ export default class Impetus {
         };
 
         /**
+         * Retrieve the window this instance has been attached to
+         * @public
+         * @returns {Window} window
+         */
+        this.getWindow = function() {
+            return win;
+        };
+
+        /**
          * Executes the update function
          */
         function callUpdateCallback() {
