@@ -177,7 +177,7 @@
          */
         function normalizeEvent(ev) {
             if (ev.type === 'touchmove' || ev.type === 'touchstart' || ev.type === 'touchend') {
-                var touch = ev.targetTouches[0] || ev.changedTouches[0];
+                var touch = ev.changedTouches[0];
                 return {
                     x: touch.clientX,
                     y: touch.clientY,
