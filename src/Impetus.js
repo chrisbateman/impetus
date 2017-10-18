@@ -12,6 +12,7 @@ window.addEventListener('touchmove', function() {});
 export default class Impetus {
     constructor({
         source: sourceEl = document,
+        axis: axis = true,
         update: updateCallback,
         multiplier = 1,
         friction = 0.92,
@@ -146,6 +147,25 @@ export default class Impetus {
         };
 
         /**
+         * Set the axis that will be scrolled
+         * @public
+         * @param {String|Boolean} axis
+         */
+        this.setAxis = function(val) {
+            val = typeof val === 'string' ? val.toLowerCase() : val;
+            axis = val === 'x' ? 'x' : (val === 'y' ? 'y' : !!val);
+        };
+
+        /**
+         * Retrieve the current axis value
+         * @public
+         * @returns {String|Boolean} axis
+         */
+        this.getAxis = function() {
+            return axis || false;
+        };
+
+        /**
          * Executes the update function
          */
         function callUpdateCallback() {
@@ -185,8 +205,8 @@ export default class Impetus {
                 decelerating = false;
                 pointerId = event.id;
 
-                pointerLastX = pointerCurrentX = event.x;
-                pointerLastY = pointerCurrentY = event.y;
+                pointerLastX = pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerLastX;
+                pointerLastY = pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerLastY;
                 trackingPoints = [];
                 addTrackingPoint(pointerLastX, pointerLastY);
 
@@ -208,8 +228,8 @@ export default class Impetus {
             var event = normalizeEvent(ev);
 
             if (pointerActive && event.id === pointerId) {
-                pointerCurrentX = event.x;
-                pointerCurrentY = event.y;
+                pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerCurrentX;
+                pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerCurrentY;
                 addTrackingPoint(pointerLastX, pointerLastY);
                 requestTick();
             }
@@ -226,6 +246,15 @@ export default class Impetus {
                 stopTracking();
             }
         }
+
+
+        /**
+         * Check if the supplied axis is locked
+         */
+        function isAxisUnlocked(testVal) {
+            return axis === testVal || axis === true;
+        }
+
 
         /**
          * Stops movement tracking, starts animation
@@ -263,8 +292,8 @@ export default class Impetus {
          * Calculate new values, call update function
          */
         function updateAndRender() {
-            var pointerChangeX = pointerCurrentX - pointerLastX;
-            var pointerChangeY = pointerCurrentY - pointerLastY;
+            var pointerChangeX = (pointerCurrentX - pointerLastX) || 0; // prevent NaN
+            var pointerChangeY = (pointerCurrentY - pointerLastY) || 0; 
 
             targetX += pointerChangeX * multiplier;
             targetY += pointerChangeY * multiplier;
@@ -317,16 +346,20 @@ export default class Impetus {
             var xDiff = 0;
             var yDiff = 0;
 
-            if (boundXmin !== undefined && targetX < boundXmin) {
-                xDiff = boundXmin - targetX;
-            } else if (boundXmax !== undefined && targetX > boundXmax) {
-                xDiff = boundXmax - targetX;
+            if (isAxisUnlocked('x')) {
+                if (boundXmin !== undefined && targetX < boundXmin) {
+                    xDiff = boundXmin - targetX;
+                } else if (boundXmax !== undefined && targetX > boundXmax) {
+                    xDiff = boundXmax - targetX;
+                }
             }
 
-            if (boundYmin !== undefined && targetY < boundYmin) {
-                yDiff = boundYmin - targetY;
-            } else if (boundYmax !== undefined && targetY > boundYmax) {
-                yDiff = boundYmax - targetY;
+            if (isAxisUnlocked('y')) {
+                if (boundYmin !== undefined && targetY < boundYmin) {
+                    yDiff = boundYmin - targetY;
+                } else if (boundYmax !== undefined && targetY > boundYmax) {
+                    yDiff = boundYmax - targetY;
+                }
             }
 
             if (restrict) {
