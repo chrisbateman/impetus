@@ -83,7 +83,7 @@ Impetus will register itself as an AMD module if it's available.
 		<tr>
 			<th scope="row" align="left"><code>axis</code></th>
 			<td><code>String|Boolean</code></td>
-			<td><code>false</code></td>
+			<td><code>true</code></td>
 			<td>Whether to lock scrolling to a given axis ("x" or "y"), to unlock both (true), or to completely prevent scrolling (false).</td>
 		</tr>
 	</tbody>
