@@ -89,7 +89,7 @@ Impetus will register itself as an AMD module if it's available.
 		<tr>
 			<th scope="row" align="left"><code>axis</code></th>
 			<td><code>String|Boolean</code></td>
-			<td><code>false</code></td>
+			<td><code>true</code></td>
 			<td>Whether to lock scrolling to a given axis ("x" or "y"), to unlock both (true), or to completely prevent scrolling (false).</td>
 		</tr>
 	</tbody>
@@ -105,6 +105,10 @@ Impetus will register itself as an AMD module if it's available.
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<th scope="row" align="left"><code>.getAxis()</code></th>
+			<td>Retrieve the current the locked axis</td>
+		</tr>
 		<tr>
 			<th scope="row" align="left"><code>.getMultiplier()</code></th>
 			<td>Retrieve the current <var>multiplier</var>.</td>
@@ -126,12 +130,8 @@ Impetus will register itself as an AMD module if it's available.
 			<td>Retrieve the <var>window</var> this instance is bound to.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left"><code>.pause()</code></th>
-			<td>Disable movement processing.</td>
-		</tr>
-		<tr>
-			<th scope="row" align="left"><code>.resume()</code></th>
-			<td>Re-enable movement processing.</td>
+			<th scope="row" align="left"><code>.setAxis( &lt;string|boolean&gt; )</code></th>
+			<td>Change the locked axis</td>
 		</tr>
 		<tr>
 			<th scope="row" align="left"><code>.setMultiplier( &lt;number&gt; )</code></th>
@@ -150,8 +150,12 @@ Impetus will register itself as an AMD module if it's available.
 			<td>Adjust the Y bound</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left"><code>.setAxis( &lt;string|boolean&gt; )</code></th>
-			<td>Change the locked axis</td>
+			<th scope="row" align="left"><code>.pause()</code></th>
+			<td>Disable movement processing.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.resume()</code></th>
+			<td>Re-enable movement processing.</td>
 		</tr>
 		<tr>
 			<th scope="row" align="left"><code>.destroy()</code></th>
