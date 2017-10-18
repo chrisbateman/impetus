@@ -106,6 +106,22 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
+			<th scope="row" align="left"><code>.getMultiplier()</code></th>
+			<td>Retrieve the current <var>multiplier</var>.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.getValues()</code></th>
+			<td>Retrieve the current <var>x</var> and <var>y</var> output values.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.getBoundX()</code></th>
+			<td>Retrieve the current X bound</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.getBoundY()</code></th>
+			<td>Retrieve the current Y bound</td>
+		</tr>
+		<tr>
 			<th scope="row" align="left"><code>.pause()</code></th>
 			<td>Disable movement processing.</td>
 		</tr>
