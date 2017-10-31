@@ -21,7 +21,7 @@
 
     var Impetus = function Impetus(_ref) {
         var _ref$axis = _ref.axis;
-        var axis = _ref$axis === undefined ? false : _ref$axis;
+        var axis = _ref$axis === undefined ? true : _ref$axis;
         var _ref$window = _ref.window;
         var win = _ref$window === undefined ? window : _ref$window;
         var _ref$source = _ref.source;
@@ -138,6 +138,15 @@
         };
 
         /**
+         * Retrieve the current x and y values
+         * @public
+         * @returns {Number[]} with the x and y values
+         */
+        this.getValues = function () {
+            return [targetX, targetY];
+        };
+
+        /**
          * Update the multiplier value
          * @public
          * @param {Number} val
@@ -145,6 +154,15 @@
         this.setMultiplier = function (val) {
             multiplier = val;
             stopThreshold = stopThresholdDefault * multiplier;
+        };
+
+        /**
+         * Retrieve the multiplier value
+         * @public
+         * @returns {Number} the multiplier value
+         */
+        this.getMultiplier = function () {
+            return multiplier;
         };
 
         /**
@@ -158,6 +176,15 @@
         };
 
         /**
+         * Retrieve boundX value
+         * @public
+         * @returns {Number[]} boundX
+         */
+        this.getBoundX = function () {
+            return [boundXmin, boundXmax];
+        };
+
+        /**
          * Update boundY value
          * @public
          * @param {Number[]} boundY
@@ -168,13 +195,40 @@
         };
 
         /**
+         * Retrieve boundY value
+         * @public
+         * @returns {Number[]} boundY
+         */
+        this.getBoundY = function () {
+            return [boundYmin, boundYmax];
+        };
+
+        /**
          * Set the axis that will be scrolled
          * @public
          * @param {String|Boolean} axis
          */
         this.setAxis = function (val) {
-            var lowerCaseVal = (val || '').toLowerCase();
-            axis = lowerCaseVal === 'x' ? 'x' : lowerCaseVal === 'y' ? 'y' : false;
+            val = typeof val === 'string' ? val.toLowerCase() : val;
+            axis = val === 'x' ? 'x' : val === 'y' ? 'y' : !!val;
+        };
+
+        /**
+         * Retrieve the current axis value
+         * @public
+         * @returns {String|Boolean} axis
+         */
+        this.getAxis = function () {
+            return axis || false;
+        };
+
+        /**
+         * Retrieve the window this instance has been attached to
+         * @public
+         * @returns {Window} window
+         */
+        this.getWindow = function () {
+            return win;
         };
 
         /**
@@ -218,8 +272,8 @@
                 decelerating = false;
                 pointerId = event.id;
 
-                pointerLastX = pointerCurrentX = axis !== 'y' ? event.x : pointerLastX;
-                pointerLastY = pointerCurrentY = axis !== 'x' ? event.y : pointerLastY;
+                pointerLastX = pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerLastX;
+                pointerLastY = pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerLastY;
                 trackingPoints = [];
                 addTrackingPoint(pointerLastX, pointerLastY);
 
@@ -241,8 +295,8 @@
             var event = normalizeEvent(ev);
 
             if (pointerActive && event.id === pointerId) {
-                pointerCurrentX = axis !== 'y' ? event.x : pointerCurrentX;
-                pointerCurrentY = axis !== 'x' ? event.y : pointerCurrentY;
+                pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerCurrentX;
+                pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerCurrentY;
                 addTrackingPoint(pointerLastX, pointerLastY);
                 requestTick();
             }
@@ -258,6 +312,13 @@
             if (pointerActive && event.id === pointerId) {
                 stopTracking();
             }
+        }
+
+        /**
+         * Check if the supplied axis is locked
+         */
+        function isAxisUnlocked(testVal) {
+            return axis === testVal || axis === true;
         }
 
         /**
@@ -347,7 +408,7 @@
             var xDiff = 0;
             var yDiff = 0;
 
-            if (axis !== 'y') {
+            if (isAxisUnlocked('x')) {
                 if (boundXmin !== undefined && targetX < boundXmin) {
                     xDiff = boundXmin - targetX;
                 } else if (boundXmax !== undefined && targetX > boundXmax) {
@@ -355,7 +416,7 @@
                 }
             }
 
-            if (axis !== 'x') {
+            if (isAxisUnlocked('y')) {
                 if (boundYmin !== undefined && targetY < boundYmin) {
                     yDiff = boundYmin - targetY;
                 } else if (boundYmax !== undefined && targetY > boundYmax) {
