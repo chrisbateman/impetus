@@ -45,6 +45,12 @@ Impetus will register itself as an AMD module if it's available.
 			<td>This function will be called with the updated <var>x</var> and <var>y</var> values.</td>
 		</tr>
 		<tr>
+			<th scope="row" align="left"><code>window</code></th>
+			<td><code>Window</code></td>
+			<td><code>window</code></td>
+			<td>The window this instance of Impetus will be bound to (useful when dealing with iframes).</td>
+		</tr>
+		<tr>
 			<th scope="row" align="left"><code>multiplier</code></th>
 			<td><code>Number</code></td>
 			<td><code>1</code></td>
@@ -80,6 +86,12 @@ Impetus will register itself as an AMD module if it's available.
 			<td><code>true</code></td>
 			<td>Whether to stretch and rebound values when pulled outside the bounds.</td>
 		</tr>
+		<tr>
+			<th scope="row" align="left"><code>axis</code></th>
+			<td><code>String|Boolean</code></td>
+			<td><code>true</code></td>
+			<td>Whether to lock scrolling to a given axis ("x" or "y"), to unlock both (true), or to completely prevent scrolling (false).</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -94,12 +106,32 @@ Impetus will register itself as an AMD module if it's available.
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row" align="left"><code>.pause()</code></th>
-			<td>Disable movement processing.</td>
+			<th scope="row" align="left"><code>.getAxis()</code></th>
+			<td>Retrieve the current the locked axis</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left"><code>.resume()</code></th>
-			<td>Re-enable movement processing.</td>
+			<th scope="row" align="left"><code>.getMultiplier()</code></th>
+			<td>Retrieve the current <var>multiplier</var>.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.getValues()</code></th>
+			<td>Retrieve the current <var>x</var> and <var>y</var> output values.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.getBoundX()</code></th>
+			<td>Retrieve the current X bound</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.getBoundY()</code></th>
+			<td>Retrieve the current Y bound</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.getWindow()</code></th>
+			<td>Retrieve the <var>window</var> this instance is bound to.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.setAxis( &lt;string|boolean&gt; )</code></th>
+			<td>Change the locked axis</td>
 		</tr>
 		<tr>
 			<th scope="row" align="left"><code>.setMultiplier( &lt;number&gt; )</code></th>
@@ -116,6 +148,14 @@ Impetus will register itself as an AMD module if it's available.
 		<tr>
 			<th scope="row" align="left"><code>.setBoundY( &lt;number[2]&gt; )</code></th>
 			<td>Adjust the Y bound</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.pause()</code></th>
+			<td>Disable movement processing.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>.resume()</code></th>
+			<td>Re-enable movement processing.</td>
 		</tr>
 		<tr>
 			<th scope="row" align="left"><code>.destroy()</code></th>

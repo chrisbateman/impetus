@@ -19,13 +19,13 @@
     var bounceDeceleration = 0.04;
     var bounceAcceleration = 0.11;
 
-    // fixes weird safari 10 bug where preventDefault is prevented
-    // @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
-    window.addEventListener('touchmove', function () {});
-
     var Impetus = function Impetus(_ref) {
+        var _ref$axis = _ref.axis;
+        var axis = _ref$axis === undefined ? true : _ref$axis;
+        var _ref$window = _ref.window;
+        var win = _ref$window === undefined ? window : _ref$window;
         var _ref$source = _ref.source;
-        var sourceEl = _ref$source === undefined ? document : _ref$source;
+        var sourceEl = _ref$source === undefined ? window : _ref$source;
         var updateCallback = _ref.update;
         var _ref$multiplier = _ref.multiplier;
         var multiplier = _ref$multiplier === undefined ? 1 : _ref$multiplier;
@@ -49,11 +49,15 @@
         var decelerating = false;
         var trackingPoints = [];
 
+        // fixes weird safari 10 bug where preventDefault is prevented
+        // @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
+        win.addEventListener('touchmove', function () {});
+
         /**
          * Initialize instance
          */
         (function init() {
-            sourceEl = typeof sourceEl === 'string' ? document.querySelector(sourceEl) : sourceEl;
+            sourceEl = typeof sourceEl === 'string' ? win.document.querySelector(sourceEl) : sourceEl;
             if (!sourceEl) {
                 throw new Error('IMPETUS: source not found.');
             }
@@ -134,6 +138,15 @@
         };
 
         /**
+         * Retrieve the current x and y values
+         * @public
+         * @returns {Number[]} with the x and y values
+         */
+        this.getValues = function () {
+            return [targetX, targetY];
+        };
+
+        /**
          * Update the multiplier value
          * @public
          * @param {Number} val
@@ -141,6 +154,15 @@
         this.setMultiplier = function (val) {
             multiplier = val;
             stopThreshold = stopThresholdDefault * multiplier;
+        };
+
+        /**
+         * Retrieve the multiplier value
+         * @public
+         * @returns {Number} the multiplier value
+         */
+        this.getMultiplier = function () {
+            return multiplier;
         };
 
         /**
@@ -154,6 +176,15 @@
         };
 
         /**
+         * Retrieve boundX value
+         * @public
+         * @returns {Number[]} boundX
+         */
+        this.getBoundX = function () {
+            return [boundXmin, boundXmax];
+        };
+
+        /**
          * Update boundY value
          * @public
          * @param {Number[]} boundY
@@ -161,6 +192,43 @@
         this.setBoundY = function (boundY) {
             boundYmin = boundY[0];
             boundYmax = boundY[1];
+        };
+
+        /**
+         * Retrieve boundY value
+         * @public
+         * @returns {Number[]} boundY
+         */
+        this.getBoundY = function () {
+            return [boundYmin, boundYmax];
+        };
+
+        /**
+         * Set the axis that will be scrolled
+         * @public
+         * @param {String|Boolean} axis
+         */
+        this.setAxis = function (val) {
+            val = typeof val === 'string' ? val.toLowerCase() : val;
+            axis = val === 'x' ? 'x' : val === 'y' ? 'y' : !!val;
+        };
+
+        /**
+         * Retrieve the current axis value
+         * @public
+         * @returns {String|Boolean} axis
+         */
+        this.getAxis = function () {
+            return axis || false;
+        };
+
+        /**
+         * Retrieve the window this instance has been attached to
+         * @public
+         * @returns {Window} window
+         */
+        this.getWindow = function () {
+            return win;
         };
 
         /**
@@ -204,17 +272,17 @@
                 decelerating = false;
                 pointerId = event.id;
 
-                pointerLastX = pointerCurrentX = event.x;
-                pointerLastY = pointerCurrentY = event.y;
+                pointerLastX = pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerLastX;
+                pointerLastY = pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerLastY;
                 trackingPoints = [];
                 addTrackingPoint(pointerLastX, pointerLastY);
 
                 // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention
-                document.addEventListener('touchmove', onMove, getPassiveSupported() ? { passive: false } : false);
-                document.addEventListener('touchend', onUp);
-                document.addEventListener('touchcancel', stopTracking);
-                document.addEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
-                document.addEventListener('mouseup', onUp);
+                win.addEventListener('touchmove', onMove, getPassiveSupported() ? { passive: false } : false);
+                win.addEventListener('touchend', onUp);
+                win.addEventListener('touchcancel', stopTracking);
+                win.addEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
+                win.addEventListener('mouseup', onUp);
             }
         }
 
@@ -227,8 +295,8 @@
             var event = normalizeEvent(ev);
 
             if (pointerActive && event.id === pointerId) {
-                pointerCurrentX = event.x;
-                pointerCurrentY = event.y;
+                pointerCurrentX = isAxisUnlocked('x') ? event.x : pointerCurrentX;
+                pointerCurrentY = isAxisUnlocked('y') ? event.y : pointerCurrentY;
                 addTrackingPoint(pointerLastX, pointerLastY);
                 requestTick();
             }
@@ -247,6 +315,13 @@
         }
 
         /**
+         * Check if the supplied axis is locked
+         */
+        function isAxisUnlocked(testVal) {
+            return axis === testVal || axis === true;
+        }
+
+        /**
          * Stops movement tracking, starts animation
          */
         function stopTracking() {
@@ -254,11 +329,11 @@
             addTrackingPoint(pointerLastX, pointerLastY);
             startDecelAnim();
 
-            document.removeEventListener('touchmove', onMove);
-            document.removeEventListener('touchend', onUp);
-            document.removeEventListener('touchcancel', stopTracking);
-            document.removeEventListener('mouseup', onUp);
-            document.removeEventListener('mousemove', onMove);
+            win.removeEventListener('touchmove', onMove);
+            win.removeEventListener('touchend', onUp);
+            win.removeEventListener('touchcancel', stopTracking);
+            win.removeEventListener('mouseup', onUp);
+            win.removeEventListener('mousemove', onMove);
         }
 
         /**
@@ -282,8 +357,8 @@
          * Calculate new values, call update function
          */
         function updateAndRender() {
-            var pointerChangeX = pointerCurrentX - pointerLastX;
-            var pointerChangeY = pointerCurrentY - pointerLastY;
+            var pointerChangeX = pointerCurrentX - pointerLastX || 0; // prevent NaN
+            var pointerChangeY = pointerCurrentY - pointerLastY || 0;
 
             targetX += pointerChangeX * multiplier;
             targetY += pointerChangeY * multiplier;
@@ -333,16 +408,20 @@
             var xDiff = 0;
             var yDiff = 0;
 
-            if (boundXmin !== undefined && targetX < boundXmin) {
-                xDiff = boundXmin - targetX;
-            } else if (boundXmax !== undefined && targetX > boundXmax) {
-                xDiff = boundXmax - targetX;
+            if (isAxisUnlocked('x')) {
+                if (boundXmin !== undefined && targetX < boundXmin) {
+                    xDiff = boundXmin - targetX;
+                } else if (boundXmax !== undefined && targetX > boundXmax) {
+                    xDiff = boundXmax - targetX;
+                }
             }
 
-            if (boundYmin !== undefined && targetY < boundYmin) {
-                yDiff = boundYmin - targetY;
-            } else if (boundYmax !== undefined && targetY > boundYmax) {
-                yDiff = boundYmax - targetY;
+            if (isAxisUnlocked('y')) {
+                if (boundYmin !== undefined && targetY < boundYmin) {
+                    yDiff = boundYmin - targetY;
+                } else if (boundYmax !== undefined && targetY > boundYmax) {
+                    yDiff = boundYmax - targetY;
+                }
             }
 
             if (restrict) {
