@@ -42,7 +42,7 @@
         var boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
         var targetX = 0;
         var targetY = 0;
-        var stopThreshold = stopThresholdDefault * multiplier;
+        var stopThreshold = Math.abs(stopThresholdDefault * multiplier);
         var ticking = false;
         var pointerActive = false;
         var paused = false;
@@ -140,7 +140,7 @@
          */
         this.setMultiplier = function (val) {
             multiplier = val;
-            stopThreshold = stopThresholdDefault * multiplier;
+            stopThreshold = Math.abs(stopThresholdDefault * multiplier);
         };
 
         /**
