@@ -413,10 +413,12 @@
 
             var diff = checkBounds();
 
+            callStartDeceleratingCallback();
             if (Math.abs(decVelX) > 1 || Math.abs(decVelY) > 1 || !diff.inBounds) {
                 decelerating = true;
-                callStartDeceleratingCallback();
                 requestAnimFrame(stepDecelAnim);
+            } else {
+                callEndDeceleratingCallback();
             }
         }
 
