@@ -26,7 +26,10 @@
     var Impetus = function Impetus(_ref) {
         var _ref$source = _ref.source;
         var sourceEl = _ref$source === undefined ? document : _ref$source;
-        var updateCallback = _ref.update;
+        var startCallback = _ref.onStart;
+        var updateCallback = _ref.onUpdate;
+        var startDeceleratingCallback = _ref.onStartDecelerating;
+        var endDeceleratingCallback = _ref.onEndDecelerating;
         var _ref$multiplier = _ref.multiplier;
         var multiplier = _ref$multiplier === undefined ? 1 : _ref$multiplier;
         var _ref$friction = _ref.friction;
@@ -171,6 +174,36 @@
         }
 
         /**
+         * Executes the start function
+         */
+        function callStartCallback() {
+            if (!startCallback) {
+                return;
+            }
+            startCallback.call(sourceEl, targetX, targetY);
+        }
+
+        /**
+         * Executes the start decelerating function
+         */
+        function callStartDeceleratingCallback() {
+            if (!startDeceleratingCallback) {
+                return;
+            }
+            startDeceleratingCallback.call(sourceEl, targetX, targetY);
+        }
+
+        /**
+         * Executes the end decelerating function
+         */
+        function callEndDeceleratingCallback() {
+            if (!endDeceleratingCallback) {
+                return;
+            }
+            endDeceleratingCallback.call(sourceEl, targetX, targetY);
+        }
+
+        /**
          * Creates a custom normalized event object from touch and mouse events
          * @param  {Event} ev
          * @returns {Object} with x, y, and id properties
@@ -200,6 +233,7 @@
         function onDown(ev) {
             var event = normalizeEvent(ev);
             if (!pointerActive && !paused) {
+                callStartCallback();
                 pointerActive = true;
                 decelerating = false;
                 pointerId = event.id;
@@ -379,9 +413,12 @@
 
             var diff = checkBounds();
 
+            callStartDeceleratingCallback();
             if (Math.abs(decVelX) > 1 || Math.abs(decVelY) > 1 || !diff.inBounds) {
                 decelerating = true;
                 requestAnimFrame(stepDecelAnim);
+            } else {
+                callEndDeceleratingCallback();
             }
         }
 
@@ -446,6 +483,7 @@
                 requestAnimFrame(stepDecelAnim);
             } else {
                 decelerating = false;
+                callEndDeceleratingCallback();
             }
         }
     }

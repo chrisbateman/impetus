@@ -182,7 +182,7 @@
 	        <h2>Usage</h2>
 			<pre><code>new Impetus({
     source: myNode,
-    update: function(x, y) {
+    onUpdate: function(x, y) {
         // whatever you want to do with the values
     }
 });</code></pre>
@@ -206,7 +206,7 @@
 		initialValues: [dotParent.offsetWidth/2 - 25, 45],
 		boundX: [0, dotParent.offsetWidth - dotEl.offsetWidth],
 		boundY: [0, dotParent.offsetHeight - dotEl.offsetHeight],
-		update: function(x, y) {
+		onUpdate: function(x, y) {
 			this.style.left = x + 'px';
 			this.style.top = y + 'px';
 		}
@@ -215,7 +215,7 @@
 	new Impetus({
 		source: '#Cube',
 		multiplier: 0.7,
-		update: function(x, y) {
+		onUpdate: function(x, y) {
 			this.style.transform = this.style.webkitTransform = 'translateZ(-120px) rotateY('+x+'deg) rotateX('+(-y)+'deg)';
 		}
 	});

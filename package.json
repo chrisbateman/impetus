@@ -1,13 +1,13 @@
 {
   "name": "impetus",
-  "version": "0.8.7",
+  "version": "1.0.0",
   "main": "dist/impetus.js",
   "homepage": "http://chrisbateman.github.io/impetus/",
   "description": "Add momentum to anything. It's like iScroll, except not for scrolling. Supports mouse and touch events.",
   "scripts": {
-    "prebuild": "rm -rf dist && mkdir dist",
+    "prebuild": "rimraf dist && mkdir dist",
     "build": "babel src/Impetus.js --modules umd -o dist/impetus.js && uglifyjs dist/impetus.js --comments -cmo dist/impetus.min.js",
-    "postbuild": "cp dist/impetus.min.js docs",
+    "postbuild": "cpx dist/impetus.min.js docs/",
     "version": "npm run build && git add dist docs -f"
   },
   "keywords": [
@@ -25,7 +25,9 @@
   },
   "devDependencies": {
     "babel": "^5.8.23",
-    "uglify-js": "^2.4.24"
+    "cpx": "^1.5.0",
+    "uglify-js": "^2.4.24",
+    "rimraf": "^2.6.2"
   },
   "engines": {
     "npm": ">=2.13.0"

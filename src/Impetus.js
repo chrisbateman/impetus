@@ -12,7 +12,10 @@ window.addEventListener('touchmove', function() {});
 export default class Impetus {
     constructor({
         source: sourceEl = document,
-        update: updateCallback,
+        onStart: startCallback,
+        onUpdate: updateCallback,
+        onStartDecelerating: startDeceleratingCallback,
+        onEndDecelerating: endDeceleratingCallback,
         multiplier = 1,
         friction = 0.92,
         initialValues,
@@ -153,6 +156,36 @@ export default class Impetus {
         }
 
         /**
+         * Executes the start function
+         */
+        function callStartCallback() {
+            if (!startCallback) {
+                return;
+            }
+            startCallback.call(sourceEl, targetX, targetY);
+        }
+
+        /**
+         * Executes the start decelerating function
+         */
+        function callStartDeceleratingCallback() {
+            if (!startDeceleratingCallback) {
+                return;
+            }
+            startDeceleratingCallback.call(sourceEl, targetX, targetY);
+        }
+
+        /**
+         * Executes the end decelerating function
+         */
+        function callEndDeceleratingCallback() {
+            if (!endDeceleratingCallback) {
+                return;
+            }
+            endDeceleratingCallback.call(sourceEl, targetX, targetY);
+        }
+
+        /**
          * Creates a custom normalized event object from touch and mouse events
          * @param  {Event} ev
          * @returns {Object} with x, y, and id properties
@@ -181,6 +214,7 @@ export default class Impetus {
         function onDown(ev) {
             var event = normalizeEvent(ev);
             if (!pointerActive && !paused) {
+                callStartCallback();
                 pointerActive = true;
                 decelerating = false;
                 pointerId = event.id;
@@ -364,9 +398,12 @@ export default class Impetus {
 
             var diff = checkBounds();
 
+            callStartDeceleratingCallback();
             if ((Math.abs(decVelX) > 1 || Math.abs(decVelY) > 1) || !diff.inBounds){
                 decelerating = true;
                 requestAnimFrame(stepDecelAnim);
+            } else {
+                callEndDeceleratingCallback();
             }
         }
 
@@ -432,6 +469,7 @@ export default class Impetus {
                 requestAnimFrame(stepDecelAnim);
             } else {
                 decelerating = false;
+                callEndDeceleratingCallback();
             }
         }
     }

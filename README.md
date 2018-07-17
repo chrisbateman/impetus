@@ -11,7 +11,7 @@ Impetus will probably never support anything other than simple momentum. If you 
 ```javascript
 var myImpetus = new Impetus({
     source: myNode,
-    update: function(x, y) {
+    onUpdate: function(x, y) {
         // whatever you want to do with the values
     }
 });
@@ -39,10 +39,28 @@ Impetus will register itself as an AMD module if it's available.
 			<td>Element reference or query string for the target on which to listen for movement.</td>
 		</tr>
 		<tr>
-			<th scope="row" align="left"><code>update</code> (required)</th>
+			<th scope="row" align="left"><code>onStart</code></th>
+			<td><code>function(x, y)</code></td>
+			<td>-</td>
+			<td>This function will be called when starting to drag the element</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>onUpdate</code> (required)</th>
 			<td><code>function(x, y)</code></td>
 			<td>-</td>
 			<td>This function will be called with the updated <var>x</var> and <var>y</var> values.</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>onStartDecelerating</code></th>
+			<td><code>function(x, y)</code></td>
+			<td>-</td>
+			<td>This function will be called when the deceleration begun (and drag has ended)</td>
+		</tr>
+		<tr>
+			<th scope="row" align="left"><code>onEndDecelerating</code></th>
+			<td><code>function(x, y)</code></td>
+			<td>-</td>
+			<td>This function will be called when the deceleration has ended</td>
 		</tr>
 		<tr>
 			<th scope="row" align="left"><code>multiplier</code></th>
