@@ -76,6 +76,14 @@ export default class Impetus {
         this.destroy = function() {
             sourceEl.removeEventListener('touchstart', onDown);
             sourceEl.removeEventListener('mousedown', onDown);
+
+            // Remove all touch events added during 'onDown' as well.
+            document.removeEventListener('touchmove', onMove, getPassiveSupported() ? {passive: false} : false);
+            document.removeEventListener('touchend', onUp);
+            document.removeEventListener('touchcancel', stopTracking);
+            document.removeEventListener('mousemove', onMove, getPassiveSupported() ? {passive: false} : false);
+            document.removeEventListener('mouseup', onUp);
+
             // however it won't "destroy" a reference
             // to instance if you'd like to do that
             // it returns null as a convinience.
@@ -235,11 +243,11 @@ export default class Impetus {
             addTrackingPoint(pointerLastX, pointerLastY);
             startDecelAnim();
 
-            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchmove', onMove, getPassiveSupported() ? {passive: false} : false);
             document.removeEventListener('touchend', onUp);
             document.removeEventListener('touchcancel', stopTracking);
+            document.removeEventListener('mousemove', onMove, getPassiveSupported() ? {passive: false} : false);
             document.removeEventListener('mouseup', onUp);
-            document.removeEventListener('mousemove', onMove);
         }
 
         /**
