@@ -94,6 +94,9 @@
         this.destroy = function () {
             sourceEl.removeEventListener('touchstart', onDown);
             sourceEl.removeEventListener('mousedown', onDown);
+
+            cleanUpRuntimeEvents();
+
             // however it won't "destroy" a reference
             // to instance if you'd like to do that
             // it returns null as a convinience.
@@ -106,6 +109,8 @@
          * @public
          */
         this.pause = function () {
+            cleanUpRuntimeEvents();
+
             pointerActive = false;
             paused = true;
         };
@@ -164,6 +169,32 @@
         };
 
         /**
+         * Removes all events set by this instance during runtime
+         */
+        function cleanUpRuntimeEvents() {
+            // Remove all touch events added during 'onDown' as well.
+            document.removeEventListener('touchmove', onMove, getPassiveSupported() ? { passive: false } : false);
+            document.removeEventListener('touchend', onUp);
+            document.removeEventListener('touchcancel', stopTracking);
+            document.removeEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
+            document.removeEventListener('mouseup', onUp);
+        }
+
+        /**
+         * Add all required runtime events
+         */
+        function addRuntimeEvents() {
+            cleanUpRuntimeEvents();
+
+            // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention
+            document.addEventListener('touchmove', onMove, getPassiveSupported() ? { passive: false } : false);
+            document.addEventListener('touchend', onUp);
+            document.addEventListener('touchcancel', stopTracking);
+            document.addEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
+            document.addEventListener('mouseup', onUp);
+        }
+
+        /**
          * Executes the update function
          */
         function callUpdateCallback() {
@@ -209,12 +240,7 @@
                 trackingPoints = [];
                 addTrackingPoint(pointerLastX, pointerLastY);
 
-                // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention
-                document.addEventListener('touchmove', onMove, getPassiveSupported() ? { passive: false } : false);
-                document.addEventListener('touchend', onUp);
-                document.addEventListener('touchcancel', stopTracking);
-                document.addEventListener('mousemove', onMove, getPassiveSupported() ? { passive: false } : false);
-                document.addEventListener('mouseup', onUp);
+                addRuntimeEvents();
             }
         }
 
@@ -254,11 +280,7 @@
             addTrackingPoint(pointerLastX, pointerLastY);
             startDecelAnim();
 
-            document.removeEventListener('touchmove', onMove);
-            document.removeEventListener('touchend', onUp);
-            document.removeEventListener('touchcancel', stopTracking);
-            document.removeEventListener('mouseup', onUp);
-            document.removeEventListener('mousemove', onMove);
+            cleanUpRuntimeEvents();
         }
 
         /**
