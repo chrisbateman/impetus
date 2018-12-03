@@ -229,6 +229,7 @@
          * @param  {Object} ev Normalized event
          */
         function onDown(ev) {
+            ev.stopPropagation();
             var event = normalizeEvent(ev);
             if (!pointerActive && !paused) {
                 pointerActive = true;
@@ -249,6 +250,7 @@
          * @param  {Object} ev Normalized event
          */
         function onMove(ev) {
+            ev.stopPropagation();
             ev.preventDefault();
             var event = normalizeEvent(ev);
 
@@ -265,6 +267,7 @@
          * @param {Object} ev Normalized event
          */
         function onUp(ev) {
+            ev.stopPropagation();
             var event = normalizeEvent(ev);
 
             if (pointerActive && event.id === pointerId) {
