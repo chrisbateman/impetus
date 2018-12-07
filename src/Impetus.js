@@ -23,6 +23,8 @@ export default class Impetus {
         var boundXmin, boundXmax, boundYmin, boundYmax, pointerLastX, pointerLastY, pointerCurrentX, pointerCurrentY, pointerId, decVelX, decVelY;
         var targetX = 0;
         var targetY = 0;
+        var prevTargetX = null;
+        var prevTargetY = null;
         var stopThreshold = stopThresholdDefault * multiplier;
         var ticking = false;
         var pointerActive = false;
@@ -180,7 +182,9 @@ export default class Impetus {
          * Executes the update function
          */
         function callUpdateCallback() {
-            updateCallback.call(sourceEl, targetX, targetY);
+            updateCallback.call(sourceEl, targetX, targetY, prevTargetX, prevTargetY);
+            prevTargetX = targetX;
+            prevTargetY = targetY;
         }
 
         /**
