@@ -210,7 +210,18 @@ export default class Impetus {
          * @param  {Object} ev Normalized event
          */
         function onDown(ev) {
-            ev.stopPropagation();
+            // This allows embedding impetus-enabled elements into other impetus-enabled elements (such as a scrollable div
+            // within another) by making any ancestor impetus ignore the down event. Normally we would use stopPropagation to
+            // prevent the event from bubbling up to the ancestor impetus (which does work as expected in raw HTML). However,
+            // this approach does not work in React because React implements its own event system, which causes all sorts of
+            // issues with non-React stopPropagation as native DOM events propagate before react events are triggered and
+            // propagate. Instead, we simply tag the event as handled. Ancestor impetus instances then ignore the event if
+            // it's been marked as handled.
+            // https://dlinau.wordpress.com/2015/09/16/avoid-mixing-reacts-event-system-with-native-dom-event-handling/
+            // https://github.com/facebook/react/issues/8693
+            if (ev.handledByImpetus) return;
+            ev.handledByImpetus = true;
+
             var event = normalizeEvent(ev);
             if (!pointerActive && !paused) {
                 pointerActive = true;
@@ -231,7 +242,6 @@ export default class Impetus {
          * @param  {Object} ev Normalized event
          */
         function onMove(ev) {
-            ev.stopPropagation();
             ev.preventDefault();
             var event = normalizeEvent(ev);
 
@@ -248,7 +258,6 @@ export default class Impetus {
          * @param {Object} ev Normalized event
          */
         function onUp(ev) {
-            ev.stopPropagation();
             var event = normalizeEvent(ev);
 
             if (pointerActive && event.id === pointerId) {
