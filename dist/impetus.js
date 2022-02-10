@@ -21,7 +21,9 @@
 
     // fixes weird safari 10 bug where preventDefault is prevented
     // @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
-    window.addEventListener('touchmove', function () {});
+    if (typeof window !== 'undefined') {
+        window.addEventListener('touchmove', function () {});
+    }
 
     var Impetus = function Impetus(_ref) {
         var _ref$source = _ref.source;
@@ -479,7 +481,7 @@
 
     module.exports = Impetus;
     var requestAnimFrame = (function () {
-        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
+        return typeof window !== 'undefined' && (window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame) || function (callback) {
             window.setTimeout(callback, 1000 / 60);
         };
     })();
