@@ -6,7 +6,9 @@ const bounceAcceleration = 0.11;
 
 // fixes weird safari 10 bug where preventDefault is prevented
 // @see https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
-window.addEventListener('touchmove', function() {});
+if (typeof window !== 'undefined') {
+    window.addEventListener('touchmove', function() {});
+}
 
 
 export default class Impetus {
@@ -465,7 +467,7 @@ export default class Impetus {
  * @see http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
  */
 const requestAnimFrame = (function(){
-    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
+    return (typeof window !== 'undefined' && (window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame)) || function(callback) {
         window.setTimeout(callback, 1000 / 60);
     };
 })();
