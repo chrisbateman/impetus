@@ -24,7 +24,7 @@
     "url": "https://github.com/chrisbateman/impetus/issues"
   },
   "devDependencies": {
-    "babel": "^5.8.23",
+    "babel": "^6.23.0",
     "uglify-js": "^2.4.24"
   },
   "engines": {
